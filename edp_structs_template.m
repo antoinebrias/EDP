@@ -32,15 +32,46 @@ mdlstruct.name =  { 'X1'
 mdlstruct.name =  { 'catch'
                    'cpue'};
 
+               
+% Data available               
+mdlstruct.data=rand(50,4);
+               
 % Type of model used: 
 % 'gp'  -> GP regression
 % 'fct' -> handle function
+
+%>>> Example 1 <<<<
 mdlstruct.mdl_type='gp';
+
+%>>> Example 2 <<<<
 mdlstruct.mdl_type='fct';
 
-% example of function
-mdlstruct.fct = @(x,u,is_det) ricker2d(x,u,is_det,param) ;
+% example of model (with param as additionnal parameters variable)
+% x is the state variables
+% u is the control
+% is_det is 1 must return the posterior mean
+mdlstruct.model = @(x,u,is_det) ricker2d(x,u,is_det,param) ;
 
+% Max number of lags for each variable
+mdlstruct.n_lags_max = 4; 
+
+% interval between lags
+mdlstruct.tau = 1; 
+
+
+%% GP options
+% by default the regression is Y=GP(X) but if we want Y=X*exp(GP(X)), this
+% parameter should be set to 1
+mdlstruct.gp.is_log=0;
+
+%  set to 1 to put a condition on the origin
+mdlstruct.gp.cond_0=0;
+
+% set to [j 0] to put a condition when the variable j is 0
+mdlstruct.gp.cond_j_0=[0 0];
+
+% set to [j 1] to put a condition when the variable j is 1
+mdlstruct.gp.cond_j_1=[0 0];
 
 
 % Control variables
@@ -129,7 +160,7 @@ dpstruct.method = 'td';
 %% temporal difference learning parameters
 
 % number of support states
-dpstruct.nb_support_states=50;
+dpstruct.n_support_states=50;
 
 % How to generate the support states used here
 % 'random' -> randomely generated 
@@ -141,10 +172,10 @@ dpstruct.generating_support_states_method = 'random';
 dpstruct.lambda=0.5;
 
 % outer loop number of iterations
-dpstruct.nOutMax = 20;
+dpstruct.n_out_max = 20;
 
 % inner loop number of iterations
-dpstruct.nInMax = 5;
+dpstruct.n_in_max = 5;
 
 % debug mode with additionnal display during the computation
 dpstruct.debug = 0;
