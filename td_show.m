@@ -4,30 +4,77 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function []=td_show(mdlstruct,dpstruct)
-% name = mdlstruct.name; 
+function []=td_show(mdlstruct,optstruct,dpstruct,indX,indY)
+% name = mdlstruct.name;
 
-x1l = linspace(0,3,20);
-x2l = linspace(0,3,20);
-[x1,x2] = meshgrid(x1l,x2l);
-M = [x1(:) x2(:)];
+if mdlstruct.n_dim>1
+    
+    if nargin == 3
+        indX = 1;
+        indY = 2;
+    end
+    
+    nxgrid=10;
+    x=mdlstruct.data;
+    x1d = [linspace(0*min(x(:,indX)),max(x(:,indX)),nxgrid);linspace(0*min(x(:,indY)),max(x(:,indY)),nxgrid)]';
+    
+    [x1d1,x1d2] =  meshgrid(x1d(:,1),x1d(:,2));
+    
+    
+    xgrid=repmat(mean(x),nxgrid^2,1);
+    xgrid(:,indX)=x1d1(:);
+    xgrid(:,indY)=x1d2(:);
+    
+    M = xgrid;
+    
+    
+    
+    [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy(M,optstruct,dpstruct);
+    
+    
+    figure;
+    
+    
+    
+    name = mdlstruct.name;
+    n_dim = mdlstruct.n_dim;
+    data = mdlstruct.data;
+    
+    
 
- [mu_gp,v_gp] = mdlstruct.gp_model(M,M*0,1);
-[mu,v] = mdlstruct.model(M,M*0,1);
+    [pplot,nplot]=numSubplots(n_dim);
+    for i=1:n_dim
+            subplot(pplot(1),pplot(2),i);
+        
+            contourf(x1d1,x1d2,reshape(opt_control(:,i),nxgrid,nxgrid))
+
+        
+        
+        grid on;  box on
+    end
+    
+else
+    
+    % to do
+end
 
 
-figure;surf(x1,x2,reshape(mu(:,1),20,20))
-hold on;surf(x1,x2,reshape(mu_gp(:,1),20,20))
 
-plot3(mdlstruct.data(1:end-1,1).*(1-mdlstruct.control_data(1:end-1,1)),mdlstruct.data(1:end-1,2).*(1-mdlstruct.control_data(1:end-1,2)),mdlstruct.data(2:end,1),'rx')
-
-
-
-[mu,v] =dpstruct.value_function.gp_model(M,1);
-
-
-
- [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy(M,optstruct,dpstruct);
-figure;surf(x1,x2,reshape(opt_control(:,1),20,20))
+% if isTD
+%     
+%     [upred,~,~]=tdPolicy(xgrid,gamma,Mdl,MdlV,ugrid,paramReward);
+% else
+%     oneSpMdl=MdlV;
+%     [upred,vres,vUnweightedTmp]=oneSpPolicy(xgrid,oneSpMdl,paramReward);
+%     
+%     
+% end
+% 
+% 
+% for i=1%:size(ugrid,2)
+%     ctrlMap{i} = reshape(upred(:,i),nxgrid,nxgrid);
+%     % subplot(1,size(ugrid,2),i)
+%     contourf(x1d1,x1d2,ctrlMap{i})
+% end
 
 end
