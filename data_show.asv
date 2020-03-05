@@ -3,7 +3,6 @@
 function []=data_show(mdlstruct)
 name = mdlstruct.name; 
 n_dim = mdlstruct.n_dim; 
-data = mdlstruct.data; 
 
 [pplot,nplot]=numSubplots(n_dim);
     for i=1:n_dim
@@ -11,18 +10,16 @@ data = mdlstruct.data;
         hold on
         plot(data(:,i),'b','Linewidth',2);
         
-        switch mdlstruct.control_type
+        switch control_type
             case 'rate'
-        plot(data(:,i).*(mdlstruct.control_data(:,i)),'c','Linewidth',2);
-        leg_control = [name{i} ' catch'];
+        plot(data(:,i).*(1-control_data(:,i)),'c','Linewidth',2);
             case 'single'
-                % to do
+                
             case 'global'
-                % to do
+                
                 
         end
         
-        legend(name{i},leg_control);
         
         grid on;  box on
     end

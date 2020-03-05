@@ -9,7 +9,7 @@ function [gp] = init_gp()
 %% GP options
 % by default the regression is Y=GP(X) but if we want Y=X*exp(GP(X)), this
 % parameter should be set to 1
-gp.is_log=0;
+gp.is_log=1;
 
 %  set to 1 to put a condition on the origin
 gp.cond_0=0;
