@@ -37,11 +37,13 @@ if ~isfield(dpstruct,'n_support_states')
 dpstruct.n_support_states=50;
 end
 
-if ~isfield(dpstruct,'generating_support_states_method')
+if dpstruct.method == 'td' & ~isfield(dpstruct,'generating_support_states_method')
 % How to generate the support states used here
 % 'random' -> randomely generated 
 % 'grid'   -> create a grid of support states (number of points on each dimension equal to dpstruct.nb_support_states^(1/n) (round to lower))
 dpstruct.generating_support_states_method = 'random';
+dpstruct = generate_support_states(mdlstruct,dpstruct);
+
 end
 
 if ~isfield(dpstruct,'lambda')

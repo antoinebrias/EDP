@@ -33,7 +33,7 @@ switch mdlstruct.control_type
             
         else
             for i = 1:length(mdlstruct.control_param)
-                Input(:,i) = Data((nlags-1)*tau+1:end-tau,i).*(1-Control((nlags-1)*tau+1:end-tau,i));
+                Input(:,i) = Data((nlags-1)*tau+1:end-tau,i).*(1-Control((nlags-1)*tau+1:end-tau,i)*mdlstruct.control_param(i));
                 Output(:,i)= Data(nlags*tau+1:end,i);
                 %                 Input(:,i) = Data(:,i).*(1-Control(:,i));
                 %                 Output(:,i)= Data(:,i);
@@ -45,29 +45,6 @@ switch mdlstruct.control_type
     case 'global'
         
 end
-
-
-% %>>> Example 2 <<<<
-% mdlstruct.control =  [1 0 0 1]; % the first and fourth variables are controlled
-
-
-
-% Control type
-% Specify how the variables are controlled
-% control_param, is an additionnal parameter for the behaviour of the
-% control
-% 'rate"  ->  independent fraction of the controlled variables is removed (between 0 and 1)
-% 'single" -> one control for several variables (bycatch for example)
-%             control_param contains the bycatch rate for each controlled
-%             variable
-% 'global" ->   TO DO
-%             control_param contains the min and max possible control on
-%             each variable
-
-
-%>>> Example 1 <<<<
-mdlstruct.control_type =  'rate'; %independant control
-
 
 
 % data normalization

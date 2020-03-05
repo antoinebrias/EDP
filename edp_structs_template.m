@@ -141,7 +141,7 @@ optstruct.weights = [0.5 0.5];
 
 %>>> Example 1 <<<<
 % use of an existing function
-optstruct.reward = @(x,u) harvest_all(x,u,optstruct.weights)
+optstruct.reward = @(x,u) reward_harvest_all(x,u,optstruct.weights)
 
 
 %>>> Example 2 <<<<

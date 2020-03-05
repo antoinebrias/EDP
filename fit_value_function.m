@@ -1,70 +1,66 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Gaussian Process regression
+% Value function approximation using GP regression
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function mdlstruct = fit_gp(mdlstruct)
-gp = mdlstruct.gp;
+function value_function = fit_value_function(value_function,input,output)
 
-
-is_log = gp.is_log;
-cond0 = gp.cond_0;
-Condj0=gp.cond_j_0;
-Condj1 =gp.cond_j_1;
-
-
-
-n_dim = mdlstruct.n_dim;
-tau = mdlstruct.tau;
-
-nlags = mdlstruct.n_lags_max; % number of lags for each covariables
-
-nTD =nlags*n_dim;
-
-Data  =mdlstruct.data;
-Control = mdlstruct.control_data;
-
-
-switch mdlstruct.control_type
-    case 'rate'
-        if iscell(mdlstruct.control_param)
-            
-        else
-            for i = 1:length(mdlstruct.control_param)
-                Input(:,i) = Data((nlags-1)*tau+1:end-tau,i).*(1-Control((nlags-1)*tau+1:end-tau,i)*mdlstruct.control_param(i));
-                Output(:,i)= Data(nlags*tau+1:end,i);
-                %                 Input(:,i) = Data(:,i).*(1-Control(:,i));
-                %                 Output(:,i)= Data(:,i);
-            end
-        end
-        
-    case 'single'
-        
-    case 'global'
-        
+if isfield(value_function,'gp')
+gp = value_function.gp;
+else
+   gp = []; 
 end
+
+if isfield(gp,'is_log')
+    % TD lambda parameter
+    is_log = gp.is_log;
+else
+    is_log=0;
+end
+
+if isfield(gp,'cond_0')
+    % TD lambda parameter
+    cond_0 = gp.cond_0;
+else
+    cond_0=0;
+end
+
+if isfield(gp,'cond_j_0')
+    % TD lambda parameter
+    cond_j_0 = gp.cond_j_0;
+else
+    cond_j_0=[0 0];
+end
+
+
+if isfield(gp,'cond_j_1')
+    % TD lambda parameter
+    cond_j_1 = gp.cond_j_1;
+else
+    cond_j_1=[0 0];
+end
+
+
+
+n_dim = size(input,2);
+tau = 1;
+
+nlags = 1; % number of lags for each covariables
+
 
 
 % data normalization
-mIn=min(Input)*1;
-sdIn=max(Input)-1*min(Input);
+mIn=min(input)*1;
+sdIn=max(input)-1*min(input);
 
 
 %%
-s_in = Input;
-y = Output;
-%% Lag matrix construction
-x = [];
-for i=1:n_dim
-    %lag matrix
-    xtmp = lagmatrix((Input(:,i)-mIn(i))/(sdIn(i)+eps),[0:tau:tau*(nlags-1)]);
-    x=[x xtmp(:,1:end)];
-end
-%remove rows with nan
-y(any(isnan(x), 2), :) = [];
-s_in(any(isnan(x), 2), :) = [];
+s_in = input;
+y = output;
+x = (input - mIn)./(sdIn+eps);
+
 x(any(isnan(x), 2), :) = [];
 
 
@@ -78,14 +74,7 @@ end
 mOut=min(z);
 sdOut=std(z);
 
-
-
-
 zOut=(z-mOut)./(sdOut+eps);
-zData = zOut;
-%
-
-
 
 
 %% GP hyperparameters optim;
@@ -95,30 +84,32 @@ gp_tau=10;
 pars=[log(LenScale) log(ve/(1-ve)) log(gp_tau)]';
 
 %     cond0 = 0;
-
-%
-%
 for i=1:n_dim
     
-    lpost=@(p) GP4DP(p,x,zOut(:,i),[],[],cond0,Condj0,Condj1,0);
+    lpost=@(p) GP4DP(p,x,zOut(:,i),[],[],cond_0,cond_j_0,cond_j_1,0);
     [pfit,nll]=fmingrad_Rprop(lpost,pars);
     phi(i,:) = exp(pfit(1:end-2))'; % lengthscale parameters
     Pfit(:,i) = pfit;
-    GP{i}= @(X)GP4DP(pfit,x,zOut(:,i),X,[],cond0,Condj0,Condj1,0); %handle function x does the long function
+    GP{i}= @(X)GP4DP(pfit,x,zOut(:,i),X,[],cond_0,cond_j_0,cond_j_1,0); %handle function x does the long function
     Nll(i) = nll;
     %     end
 end
 
-mdlstruct.gp.gp_handle=GP;
-mdlstruct.gp.n_dim=n_dim;
-mdlstruct.gp.lengthscales=phi;
-mdlstruct.gp.pfit=Pfit;
-mdlstruct.gp.nll=Nll;
-mdlstruct.gp.mIn=mIn;
-mdlstruct.gp.sdIn=sdIn;
-mdlstruct.gp.mOut=mOut;
-mdlstruct.gp.sdOut=sdOut;
-mdlstruct.gp_model = @(x,u,is_det)post_gp(x,u,is_det,mdlstruct.gp);
+value_function.gp.is_log=is_log;
+value_function.gp.cond_0=cond_0;
+value_function.gp.cond_j_0=cond_j_0;
+value_function.gp.cond_j_1=cond_j_1;
+
+value_function.gp.gp_handle=GP;
+value_function.gp.n_dim=n_dim;
+value_function.gp.lengthscales=phi;
+value_function.gp.pfit=Pfit;
+value_function.gp.nll=Nll;
+value_function.gp.mIn=mIn;
+value_function.gp.sdIn=sdIn;
+value_function.gp.mOut=mOut;
+value_function.gp.sdOut=sdOut;
+value_function.gp_model = @(x,is_det)post_gp(x,0,is_det,value_function.gp);
 
 end
 
