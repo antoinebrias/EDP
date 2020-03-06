@@ -59,7 +59,7 @@ y = Output;
 x = [];
 for i=1:n_dim
     %lag matrix
-    xtmp = lag_matrix((Input(:,i)-mIn(i))/(sdIn(i)+eps),[0:tau:tau*(nlags-1)]);
+    xtmp = hankel_matrix((Input(:,i)-mIn(i))/(sdIn(i)+eps),[0:tau:tau*(nlags-1)]);
     x=[x xtmp(:,1:end)];
 end
 %remove rows with nan
