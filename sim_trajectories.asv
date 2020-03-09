@@ -21,14 +21,15 @@ else
 end
 
 X{1} = repmat(x_init, n_traj,1);
-cum_value = 0;
-
+tot_value = 0;
+tot_unweighted_value=zeros(1,n_dim);
 for t=2:t_max
    
 [opt_control_tmp,unweighted_opt_value,weighted_opt_value]=td_policy(X{t-1},optstruct,dpstruct);
 
 if  t==2
     traj.th_value = weighted_opt_value;
+    traj.th_unweighted_value = unweighted_opt_value;
 end
 
 
@@ -42,24 +43,26 @@ else
 end
 
 
-instant_value_tmp{t-1} = optstruct.reward(X{t-1},opt_control{t-1});
-cum_value = cum_value+optstruct.discount_factor^(t-2);
+[instant_value_tmp{t-1} unweighted_instant_value_tmp{t-1}] = optstruct.reward(X{t-1},opt_control{t-1});
+
+tot_unweighted_value =  tot_unweighted_value+unweighted_instant_value_tmp{t-1}*optstruct.discount_factor^(t-2);
+tot_value = tot_value+instant_value_tmp{t-1}*optstruct.discount_factor^(t-2);
+instant_cum_value(t,1:n_traj) = tot_value;
 end
 
 
 for t=1:t_max-1
    data(t,1:n_traj,1:n_dim) = X{t};
    control(t,1:n_traj,1:n_dim) =opt_control{t};
-   instant_value(t,1:n_traj) =instant_value_tmp{t};
 end
 
 
 
 traj.data = data;
 traj.control = control;
-traj.value = cum_value;
-traj.instant_value = instant_value;
-
+traj.value = tot_value;
+traj.instant_cum_value = instant_cum_value;
+traj.unweighted_value =  
 
 
 
@@ -69,8 +72,8 @@ name = mdlstruct.name;
 
 %% display
 mean_x = squeeze(mean(traj.data));
-mean_catch = mean(traj.data.*traj.control);
-mean_v = mean(traj.value);
+mean_catch = squeeze(mean(traj.data.*traj.control));
+mean_v = squeeze(mean(traj.instant_cum_value'));
 figure
 title('Mean trajectory')
 hold on
@@ -92,6 +95,8 @@ hold on
         end
         
         legend(name{i},leg_control);
+        xlabel('Time')
+        ylabel(name{i})
         
         grid on;  box on
     end
@@ -100,7 +105,8 @@ hold on
       hold on
         plot(mean_v,'g','Linewidth',2);
     legend('cumulative reward');
-        
+                xlabel('Time')
+        ylabel('Reward')
         grid on;  box on
 
 

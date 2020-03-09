@@ -14,7 +14,7 @@ dpstruct.method = 'td';
 %% temporal difference learning parameters
 
 % number of support states
-dpstruct.n_support_states=50;
+dpstruct.n_support_states=20;
 
 % How to generate the support states used here
 % 'random' -> randomely generated 
@@ -24,13 +24,13 @@ if nargin==1
 dpstruct = generate_support_states(mdlstruct,dpstruct);
 end
 % TD lambda parameter
-dpstruct.lambda=0.5;
+dpstruct.lambda=0.9;
 
 % outer loop number of iterations
-dpstruct.n_out_max = 20;
+dpstruct.n_out_max = 50;
 
 % inner loop number of iterations
-dpstruct.n_in_max = 2;
+dpstruct.n_in_max = 1;
 
 % debug mode with additionnal display during the computation
 dpstruct.debug = 0;

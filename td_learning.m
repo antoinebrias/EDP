@@ -63,7 +63,8 @@ end
 
 
 % control grid
-U=linspace(0,1,10);
+nU = 10;
+U=linspace(0,1,nU);
 [~,uWeightsInd]=find(mdlstruct.control_param>0);
 switch mdlstruct.control_type
     case 'rate'
@@ -79,7 +80,7 @@ switch mdlstruct.control_type
                 if isMember
                     control_grid=[control_grid gridTmpU{ii}(:)];
                 else
-                    control_grid=[control_grid zeros(nU^nnz(uWeights),1)];
+                    control_grid=[control_grid zeros(nU^nnz(mdlstruct.control_param),1)];
                     % columns of zeros for uncontroled species
                 end
             end
@@ -142,7 +143,7 @@ for n_out=1:n_out_max
         %% Computing temporal difference
         
         if n_out==1 & isempty(value_function)
-            [vTD(:,n_in),vI(:,:,n_in)]=  reward(ss,ss.*0);
+            [vTD(:,n_in),vI(:,:,n_in)]=  reward(ss,ss.*0,weights);
         else
             [muV,vV]=value_function.gp_model(ss,1);
             vI(:,:,n_in)=muV;

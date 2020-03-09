@@ -25,11 +25,11 @@ nextX = mu;%.*currentU;%.*currentU./(currentU+eps);
 nextX(nextX<0)=0;
 
 if isempty(value_function)
-    [res,resUnweighted]=reward(currentX*0,currentU*0);
+    [res,resUnweighted]=reward(currentX*0,currentU*0,weights);
 
 else
   
-    [resTotTmp,resUnweighted]=reward(currentX,currentU);
+    [resTotTmp,resUnweighted]=reward(currentX,currentU,weights);
   
     [muV,~]=value_function.gp_model(nextX,1);
     

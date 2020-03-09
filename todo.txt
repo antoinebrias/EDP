@@ -6,6 +6,7 @@ mdldata
 
 optdata
 	-> structure?
+    -> reward: harv/protection
 dpdata
 	-> bdp
 	-> td
