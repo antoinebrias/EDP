@@ -1,11 +1,10 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% find the optimal control given the TD value function
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy(x,optstruct,dpstruct,mdlstruct)
+% TD_POLICY  finds the optimal control given the TD value function and the
+% state of the system
+%    [OPT_CONTROL,UNWEIGHTED_OPT_VALUE,WEIGHTED_OPT_VALUE]=TD_POLICY(X,OPTSTRUCT,DPSTRUCT,MDLSTRUCT)
+%    returns the optimal control according the EDP policy for the system in
+%    state X.
+
 
 %% One-step ahead DP problem
 % solve the one-step ahead DP equation by looking for the control

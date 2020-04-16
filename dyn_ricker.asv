@@ -1,13 +1,21 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Multi-species Ricker model
+%
+% Input are: the population x, the control u, the ricker model parameters
+% param{1} contains the standard deviation
+% param{2} contains the interaction matrix 
+% param{3} contains the growth rates
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 function [mu,v] = dyn_ricker(x,u,is_det,param)
 % DYN_RICKER  Multi-species Ricker model.
 %   [MU,V] = DYN_RICKER(X,U,IS_DET,PARAM) computes the next state of a 
 %   system in a current state X following a Ricker dynamics. U is the
 %   fraction of X catched. IS_DET is a boolean indicating if the result is
-%   the deterministic mean or a sample. PARAM is a cell array containing the
-%   parameters of the Ricker model. PARAM{1} is
-%   the standard deviation of the log-normal noise applied to the model.
-%   PARAM{2} is the interaction matrix and PARAM{3} is the growth rate array.
-
+%   the deterministic mean 
+%   See also GP_SHOW, TD_SHOW.
 if ~isempty(u)
     s=x.*(1-u);
 else

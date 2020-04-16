@@ -1,0 +1,32 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Data generation following a given model
+% [x,u] = generate_data(model,xinit,u,T)
+% Input are: the model used (model(x,u,is_det)), the initial starting point xinit, the
+% control u (if available), the length of the time series, the available
+% variables
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+function [x,u] = generate_data(model,xinit,u,T)
+% GENERATE_DATA   Data generation following a given model.
+%    [X,U] = GENERATE_DATA(MODEL,XINIT,U,T) generates data according the
+%    MODEL, starting from XINIT, with the list of control U (!!! need to add ), until the time
+%    horizon T.
+%    We are looking for the control optimizing this function. 
+%    For each state in the SUPPORT_STATES list, we apply every controls and
+%    return the result of the one-step ahead Dynamic Programming
+%    equation. RES contains the weighted sum  over all objectives. RESUNWEIGHTED
+%    contains the result for each objective.
+x(1,:) = xinit;
+
+
+for t = 2:T
+    x(t,:)=model(x(t-1,:),u(t-1,:),0);
+end
+
+
+end
+
+

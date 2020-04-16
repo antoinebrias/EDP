@@ -1,15 +1,9 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Data generation following a given model
-%
-% Input are: the model used (model(x,u,is_det)), the initial starting point xinit, the
-% control u (if available), the length of the time series, the available
-% variables
-% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function [x,u] = generate_data(model,xinit,u,T)
+% GENERATE_DATA   Data generation following a given model.
+%    [X,U] = GENERATE_DATA(MODEL,XINIT,U,T) generates data according the
+%    MODEL, starting from XINIT, with the list of control U (!!! need to add more clever rules), until the time
+%    horizon T.
+
 x(1,:) = xinit;
 
 

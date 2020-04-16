@@ -1,12 +1,27 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Current  value function
+% (we look for the control optimizing this function)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 function [res, resUnweighted] = fun_optim_td(support_states,control,value_function,model,optstruct,mdlstruct)
-% FUN_OPTIM_TD   Value function of the one-step ahead Dynamic Programming
-% equation, which has to be optimized according the control.
+% FUN_OPTIM_TD   Value function of the on-step ahead Dynamic Programming 
 %    [RES, RESUNWEIGHTED] = FUN_OPTIM_TD(SUPPORT_STATES,CONTROL,VALUE_FUNCTION,MODEL,OPTSTRUCT,MDLSTRUCT) fits
-%    We are looking for the control optimizing this function. 
-%    For each state in the SUPPORT_STATES list, we apply every controls and
-%    return the result of the one-step ahead Dynamic Programming
-%    equation. RES contains the weighted sum  over all objectives. RESUNWEIGHTED
-%    contains the result for each objective.
+%    a Gaussan Process on the states in INPUT with their value in OUTPUT.
+%    
+%   As output, you will find:
+%    VALUE_FUNCTION.GP_MODEL is a handle of the posterior GP.
+%    VALUE_FUNCTION.IS_ERR is the in-sample error of the posterior GP.
+%    VALUE_FUNCTION.OOS_ERR is the out-of-sample error of the posterior GP.
+%    VALUE_FUNCTION.LENGTHSCALES is the lenghscale parameters for each variables.
+%    VALUE_FUNCTION.NLL is the negative-likelihood.
+%    VALUE_FUNCTION.PFIT is the hyperparameter vector of the Gaussian
+%    Process
+%
+%   See also FIT_GP.
 
 discount_factor = optstruct.discount_factor;
 reward = optstruct.reward;

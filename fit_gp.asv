@@ -1,11 +1,13 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Gaussian Process regression
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function mdlstruct = fit_gp(mdlstruct)
+% FIT_GP   Gaussian Process regression.
+%    MDLSTRUCT = FIT_GP(MDLSTRUCT) normalizes the data in MDLSTRUCT and
+%    optimize hyperparameters of a Gaussian Process regression on these
+%    data, according the constraints available in the MDLSTRUCT.GP
+%    structure:
+%    GP.IS_LOG indicates if we consider fitting log(X_{t+1}/X_{t}) instead
+%    of
+%
+%   See also POST_GP.
 gp = mdlstruct.gp;
 
 is_log = gp.is_log;
@@ -35,8 +37,12 @@ switch mdlstruct.control_type
             for i = 1:n_dim
                 %                 Input(:,i) = Data((n_lags-1)*tau+1:end-tau,i).*(1-Control((n_lags-1)*tau+1:end-tau,i)*mdlstruct.control_param(i));
                 %                 Output(:,i)= Data(n_lags*tau+1:end,i);
-                Input(:,i) = Data(:,ind_available_var(i)).*(1-Control(:,ind_available_var(i)));
-                Output(:,i)= Data(:,ind_available_var(i));
+                
+                Input(:,i) = Data((n_lags(ind_available_var(i))-1)*tau+1:end-tau,ind_available_var(i)).*(1-Control((n_lags(ind_available_var(i))-1)*tau+1:end-tau,ind_available_var(i))*mdlstruct.control_param(ind_available_var(i)));
+                Output(:,i)= Data(n_lags(ind_available_var(i))*tau+1:end,ind_available_var(i));
+                
+%                 Input(:,i) = Data(:,ind_available_var(i)).*(1-Control(:,ind_available_var(i))*mdlstruct.control_param(ind_available_var(i)));
+%                 Output(:,i)= Data(:,ind_available_var(i));
             end
         end
         
@@ -82,7 +88,7 @@ sdOut=std(z);
 
 
 zOut=(z-mOut)./(sdOut+eps);
-zData = zOut;
+
 %
 
 
@@ -136,7 +142,7 @@ mdlstruct.gp.oos_err=errOS;
 mdlstruct.gp.gp_handle=GP;
 mdlstruct.gp.n_dim=n_dim;
 mdlstruct.gp.tau=tau;
-mdlstruct.gp.n_lags_max=n_lags;
+mdlstruct.gp.n_lags=n_lags;
 mdlstruct.gp.lengthscales=phi;
 mdlstruct.gp.pfit=Pfit;
 mdlstruct.gp.nll=Nll;

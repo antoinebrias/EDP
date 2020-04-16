@@ -1,11 +1,15 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Support states list generation
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function [dpstruct] = generate_support_states(mdlstruct,dpstruct)
+% GENERATE_SUPPORT_STATES   Data generation following a given model.
+%    [DPSTRUCT] = GENERATE_SUPPORT_STATES(MDLSTRUCT,DPSTRUCT) generates
+%    list of support states according the data in MDLSTRUCT and DPSTRUCT
+%    
+%    DPSTRUCT.N_SUPPORT_STATES is the number of support states
+%    
+%    DPSTRUCT.GENERATING_SUPPORT_STATES_METHOD is the method used to
+%    generate the list (!!! for now only 'random' is working)
+
+
+
 n_lags = mdlstruct.n_lags;
 ind_available_var = mdlstruct.ind_available_var;
 

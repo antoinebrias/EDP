@@ -1,16 +1,19 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Gaussian Process posterior mean and variance
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function [mu,v] = post_gp(x,u,is_det,gp)
 % POST_GP  Gaussian Process posterior mean and variance.
 %   [MU,V] = POST_GP(X,U,IS_DET,GP) return the posterior mean MU and
 %   variance V, given the data X, the control U, and the Gaussian Process
 %   structure GP.
-%   If is_det is 0, generates a sample MU, according the posterior
-%   distribution.
-%   
-%   !!! Need to handle more control rules.
+%   If is_det is 0, generate
 
+% function [mu,v] = post_gp(x,u,is_det,is_hist,gp)
 
-
-s= x.*(1-u); % !!! need to be changed for different types of control
+s= x.*(1-u); % need to be changed for different types of control
 
 
 snorm = (s-gp.mIn)./(gp.sdIn);

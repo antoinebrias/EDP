@@ -1,7 +1,13 @@
-% Complete the structures by adding default options if needed, and prepare
-% additionnal parameters required for the computation
+function [mdlstruct,optstruct,dpstruct]=fill_edp_structs(mdlstruct,dpstruct)
+% FILL_EDP_STRUCTS  Complete the structures by adding default options if 
+% needed, and prepare additionnal parameters required for the computation.
+%   [MDLSTRUCT,OPTSTRUCT,DPSTRUCT]=FILL_EDP_STRUCTS(MDLSTRUCT,OPTSTRUCT,DPSTRUCT)
+%   Several fields are filled with defaut options in the structure
+%   containing the data information MDLSTRUCT, the optimal control problem
+%   structure OPTSTRUCT and the approximated dynamic programming method
+%   structure DPSTRUCT.
 
-function [mdlstruct,optstruct,dpstruct]=fill_edp_structs(mdlstruct,optstruct,dpstruct)
+
 %% Model Structure
 if isfield(dpstruct,'data')
 mdlstruct.n_dim = size(mdlstruct.data,2);
@@ -12,16 +18,7 @@ else
 end
 
 
-
-
-
-
 %% Optimal control Structure
-
-
-
-
-
 
 
 

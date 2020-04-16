@@ -1,7 +1,13 @@
-% GP regression vizualisation
-
 function []=gp_show(mdlstruct,indX,indY)
-% name = mdlstruct.name;
+% GP_SHOW  GP regression vizualisation.
+%    []=GP_SHOW(MDLSTRUCT,INDX,INDY) displays the results of the GP 
+%    regression appplied on a slice of dimension INDX and dimension INDY 
+%    of the space (if 2 or more dimensions).
+%
+%   !!! need a more exhaustive treatment.
+%
+%   See also DATA_SHOW, TD_SHOW.
+
 
 if mdlstruct.n_dim>1
     

@@ -1,12 +1,11 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Approximate dynamic programming algorithm
-% Using temporal difference learning
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function [dpstruct] = td_learning(mdlstruct,optstruct,dpstruct,name_model)
+% TD_LEARNING  Approximate dynamic programming using temporal difference algorithm.
+%    [DPSTRUCT] = TD_LEARNING(MDLSTRUCT,OPTSTRUCT,DPSTRUCT,NAME_MODEL) generates
+%    the value function used to determine near-optimal policy, based on a
+%    temporal difference algorithm, using the model NAME_MODEL 
+%    ('gp' if GP regression, 'model' if a model is available)
+%    
+
 
 %% Embedded dimensions parameters
 n_lags = mdlstruct.n_lags;
@@ -56,6 +55,7 @@ else
 end
 
 
+% choose the prediction method, between a model or a GP regression
 switch name_model
     case 'gp'
         model=mdlstruct.gp_model;
@@ -209,7 +209,7 @@ for n_out=1:n_out_max
         
     end
     
-    % %
+    % % for debugging
     %                         figure(1123);
     %                         subplot(2,2,1)
     %                         plot(ssInit(:,1),vI(:,:,1),'.','Linewidth',2)

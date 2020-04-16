@@ -1,10 +1,10 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% GP regression vizualisation
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 function []=td_show(mdlstruct,optstruct,dpstruct,indX,indY)
+% TD_SHOW  displays the control map obtained by the EDP policy
+%   []=TD_SHOW(MDLSTRUCT,OPTSTRUCT,DPSTRUCT,INDX,INDY)
+%    returns the slice of control map according the axis INDX and INDY
+%
+% !!! Need to handle more cases
+
 % name = mdlstruct.name;
 n_lags = mdlstruct.n_lags;
 n_dim= mdlstruct.n_dim;

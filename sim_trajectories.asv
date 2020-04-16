@@ -6,6 +6,15 @@
 
 
 function traj = sim_trajectories(mdlstruct,optstruct,dpstruct,t_max,n_traj,start_x,is_display)
+% sim_trajectories  Reward function: reward on every species catched.
+%    sim_trajectories(mdlstruct,optstruct,dpstruct,t_max,n_traj,start_x,is_display)
+%   Return the reward, applying the control U on the current state X, with
+%   a weight WEIGHTS on each variable.
+%
+%   TOTAL_REWARD is the sum of every species rewards. UNWEIGHTED_REWARD is
+%   a vector containing each individual reward.  WEIGHTED_REWARD is
+%   a vector containing each weighted individual reward.
+%
 
 n_lags = mdlstruct.n_lags;
 ind_available_var = mdlstruct.ind_available_var;
@@ -95,7 +104,7 @@ if is_display
     figure
     title('Mean trajectory')
     hold on
-    [pplot,nplot]=numSubplots(n_dim+1);
+    [pplot,nplot]=numSubplots(n_real_dim+1);
     for i=1:n_real_dim
         subplot(pplot(1),pplot(2),i);
         hold on
@@ -103,9 +112,10 @@ if is_display
         
         switch mdlstruct.control_type
             case 'rate'
-                if ind_available_var
-                plot(mean_catch(:,ii),'c','Linewidth',2);
+                if n_lags(i) ~= 0
+                plot(mean_catch(:,i),'c','Linewidth',2);
                 leg_control = [name{i} ' catch'];
+                end
             case 'single'
                 % to do
             case 'global'
@@ -120,7 +130,7 @@ if is_display
         grid on;  box on
     end
     
-    subplot(pplot(1),pplot(2),n_dim+1);
+    subplot(pplot(1),pplot(2),n_real_dim+1);
     hold on
     plot(mean_v,'g','Linewidth',2);
     legend('cumulative reward');

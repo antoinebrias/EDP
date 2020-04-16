@@ -1,12 +1,11 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Data structure default  initialization
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function [mdlstruct] = init_mdl_struct(n_dim,n_lags)
-
+% INIT_MDL_STRUCT Model structure default  initialization.
+%   [MDLSTRUCT] = INIT_MDL_STRUCT(N_DIM) sets a model structure with N_DIM species 
+%
+%
+%   [MDLSTRUCT] = INIT_MDL_STRUCT(N_DIM,N_LAGS) sets a model structure with
+%   N_DIM species and N_LAGS lags for each species.
+%
 mdlstruct.n_dim = n_dim;
 mdlstruct.tau = 1;
 if nargin >1

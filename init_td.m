@@ -6,6 +6,12 @@
 
 
 function [dpstruct] = init_td(mdlstruct)
+% INIT_TD Temporal difference learning structure default  initialization.
+%   [DPSTRUCT] = INIT_TD(MDLSTRUCT) sets a default temporal difference
+%   learning (approximate dynamic programming) structure. MDLSTRUCT is an
+%   input in order to generate the support states list.
+%
+
 dpstruct.method = 'td';
 
 %% Backward dynamic programming parameters

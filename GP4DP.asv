@@ -1,12 +1,6 @@
-function [neglpost,neglgrad,out,dataGP]=GP4DP(pars,X,Y,predgrid,dataGP,cond0,Condj0,Condj1,noVe)
+function[neglpost,neglgrad,out,dataGP]=GP4DP(pars,X,Y,predgrid,dataGP,cond0,Condj0,Condj1,noVe)
 % GP4DP  Gaussian Process regression
-%   [NEGLPOST,NEGLGRAD,OUT,DATAGP]=GP4DP(PARS,X,Y,PREDGRID,DATAGP,COND0,CONDJ0,CONDJ1,NOVE)
-%
-%   COND0,CONDJ0,CONDJ1,NOVE are constraint put on the GP. COND0 is 1 if
-%   there is a constraint on 0. CONDJ0=[j beta] indicates that the j-th 0
-%   is constraint by beta. CONDJ1=[j beta] indicates that the j-th 1
-%   is constraint by beta. NOVE indicates that there is no noise prior.
-%
+
 %   This version assumes X is scaled [0,1] and Y is centered
 %    covariance function is
 %    exponential (dexp=1), squared-exponential (dexp=2), or conditional on f(0,0)=0 (cond0=1);

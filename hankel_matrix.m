@@ -1,11 +1,8 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Create matrix of lagged time series
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function YLag = hankel_matrix(Y,lags)
+% HANKEL_MATRIX  Create matrix of lagged time series.
+%   YLAG = HANKEL_MATRIX(Y,LAGS) given the time-series Y and the lags, 
+%   creates the matrix of lagged time series.
+
 
 % Check for a vector:
 if numel(Y) == length(Y)
@@ -21,7 +18,7 @@ numLags = length(lags); % Number of lags to apply to each time series
 
 [numObs,numSeries] = size(Y);
 
-YLag = default_value(ones(numObs,numSeries*numLags)); % Preallocate
+YLag = default_value(ones(numObs,numSeries*numLags)); % Preallocation
 
 for k = 1:numLags
     

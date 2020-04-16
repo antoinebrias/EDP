@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
+% !!! DEPRECATED !!!
 % This is a template main file for EDP 1.0.
 % The different structures have to be initialized (see edp_structs_template.m)
 %

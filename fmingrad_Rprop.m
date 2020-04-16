@@ -1,8 +1,10 @@
 function [xopt,fopt,gradopt]=fmingrad_Rprop(fun,xinit)
-    %fun is a handle to a function that has grad as optional second output
-    %this uses the sign of the gradient to determine descent directions 
-    %and an adaptive step size - supposedly smoother convergence than
-    %conjugate gradients for GP optimization
+% FMINGRAD_RPROP  R-prop algorithm optimizing the GP hyperparameters.
+%   [XOPT,FOPT,GRADOPT]=FMINGRAD_RPROP(FUN,XINIT)
+%     FUN is a handle to a function that has grad as optional second output
+%     this uses the sign of the gradient to determine descent directions 
+%     and an adaptive step size - supposedly smoother convergence than
+%     conjugate gradients for GP optimization. XINIT is the initial point.
     p=length(xinit);
     
     %optimization parameters for Rprop

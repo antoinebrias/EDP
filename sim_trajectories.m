@@ -1,11 +1,10 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Simulate controlled trajectories
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function traj = sim_trajectories(mdlstruct,optstruct,dpstruct,t_max,n_traj,start_x,is_display)
+% SIM_TRAJECTORIES   Simulate controlled trajectories according EDP results
+%   SIM_TRAJECTORIES(MDLSTRUCT,OPTSTRUCT,DPSTRUCT,T_MAX,N_TRAJ,START_X,IS_DISPLAY)
+%   simulates N_TRAJ starting from START_X, until time horizon T_MAX. At
+%   each step, the optimal control is computed thanks to the EDP policy.
+%
+%   IS_DISPLAY indicates if a figure containing the mean trajectory is produced.
 
 n_lags = mdlstruct.n_lags;
 ind_available_var = mdlstruct.ind_available_var;

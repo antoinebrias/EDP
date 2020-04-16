@@ -1,11 +1,8 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Gaussian Process structure default  initialization
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function [gp] = init_gp()
+% INIT_GP  Gaussian Process structure default  initialization.
+%   [GP] = INIT_GP() sets a GP regression up with default options 
+
+
 %% GP options
 % by default the regression is Y=GP(X) but if we want Y=X*exp(GP(X)), this
 % parameter should be set to 1

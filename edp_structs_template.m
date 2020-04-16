@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
+% !!! DEPRECATED !!!
 % This is a template inputfile for EDP 1.0.
 % The data are given in 3 mandatory data structures, with various data fields.
 %

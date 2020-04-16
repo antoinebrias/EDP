@@ -1,0 +1,36 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% find the optimal control given the TD value function
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+function [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy(x,optstruct,dpstruct,mdlstruct)
+% TD_LEARNING  Approximate dynamic programming using temporal difference algorithm.
+%    [DPSTRUCT] = TD_LEARNING(MDLSTRUCT,OPTSTRUCT,DPSTRUCT,NAME_MODEL) generates
+%    the value function used to determine near-optimal policy, based on a
+%    temporal difference algorithm, using the model NAME_MODEL 
+%    ('gp' if GP regression, 'model' if a model is available)
+
+
+%% One-step ahead DP problem
+% solve the one-step ahead DP equation by looking for the control
+% maximizing fun_optim_td
+fOptTD = @(control) fun_optim_td (x,control,dpstruct.value_function,dpstruct.model,optstruct,mdlstruct);
+
+ftd = [];
+
+[ftd,~]=fOptTD(dpstruct.control_grid);
+
+
+[~,indCurrentU]=min(reshape(ftd,size(dpstruct.control_grid,1),size(x,1)));
+
+% optimal control
+opt_control=dpstruct.control_grid(indCurrentU,:);
+
+[muV,~]=dpstruct.value_function.gp_model(x,1);
+weighted_opt_value = muV*optstruct.weights';
+unweighted_opt_value = muV;
+
+
+end

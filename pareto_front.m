@@ -1,11 +1,11 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Pareto front computation
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function pareto = pareto_front(mdlstruct,optstruct,dpstruct,n_pareto,name_model)
+% PARETO_FRONT  Pareto Front computation.
+%   PARETO = PARETO_FRONT(MDLSTRUCT,OPTSTRUCT,DPSTRUCT,N_PARETO,NAME_MODEL)
+%   Computes the structure PARETO containing the result of EDP for a range
+%   of value weightings.
+%
+% !!! handles 2d case only
+
 
 
 if mdlstruct.n_dim == 2

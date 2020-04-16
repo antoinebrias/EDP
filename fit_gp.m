@@ -1,11 +1,33 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Gaussian Process regression
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function mdlstruct = fit_gp(mdlstruct)
+% FIT_GP   Gaussian Process fitting.
+%    MDLSTRUCT = FIT_GP(MDLSTRUCT) normalizes the data in MDLSTRUCT and
+%    optimize hyperparameters of a Gaussian Process regression on these
+%    data, according the constraints available in the MDLSTRUCT.GP
+%    structure:
+%
+%    GP.IS_LOG indicates if we consider fitting log(X_{t+1}/X_t) instead
+%    of X_{t+1}
+%
+%    GP.COND0 indicates if a constraint on [0,0,...,0] is applied.
+%
+%    GP.COND_J_0 indicates if a constraint on 0 is applied on the j-th
+%    variable.
+%
+%    GP.COND_J_1 indicates if a constraint on 1 is applied on the j-th
+%    variable. !!! Don't apply more than one constraint for now.
+%
+%   As output, you will find:
+%    GP.GP_MODEL is a handle of the posterior GP.
+%    GP.IS_ERR is the in-sample error of the posterior GP.
+%    GP.OOS_ERR is the out-of-sample error of the posterior GP.
+%    GP.LENGTHSCALES is the lenghscale parameters for each variables.
+%    GP.NLL is the negative-likelihood.
+%    GP.PFIT is the hyperparameter vector of the Gaussian Process
+%
+%   See also POST_GP, FIT_VALUE_FUNCTION.
+
+
+
 gp = mdlstruct.gp;
 
 is_log = gp.is_log;

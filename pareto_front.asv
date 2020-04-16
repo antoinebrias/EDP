@@ -5,7 +5,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function pareto = pareto_front(mdlstruct,optstruct,dpstruct,n_pareto,'')
+function pareto = pareto_front(mdlstruct,optstruct,dpstruct,n_pareto,name_model)
+% PARETO_FRONT  Gaussian Process structure default  initialization.
+%   [GP] = INIT_GP() sets a GP regression up with default options 
+
 
 
 if mdlstruct.n_dim == 2
@@ -14,19 +17,19 @@ if mdlstruct.n_dim == 2
     
     
     optstruct.weights =[1 0];
-    [dpstruct10] = td_learning(mdlstruct,optstruct,dpstruct,'gp');
+    [dpstruct10] = td_learning(mdlstruct,optstruct,dpstruct,name_model);
     
     traj10 = sim_trajectories(mdlstruct,optstruct,dpstruct,50,10,'last');
     
     
     optstruct.weights = [0 1];
-    [dpstruct01] = td_learning(mdlstruct,optstruct,dpstruct,'gp');
+    [dpstruct01] = td_learning(mdlstruct,optstruct,dpstruct,name_model);
     traj01 = sim_trajectories(mdlstruct,optstruct,dpstruct,50,10,'last');
     %
     
     for i=1:n_pareto
         optstruct.weights = Rho(i,:)./[unique(traj10.th_value) unique(traj01.th_value)];
-        [dpstruct] = td_learning(mdlstruct,optstruct,dpstruct,'gp');
+        [dpstruct] = td_learning(mdlstruct,optstruct,dpstruct,name_model);
         traj{i} = sim_trajectories(mdlstruct,optstruct,dpstruct,50,10,'last');
         
         
