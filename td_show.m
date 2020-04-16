@@ -68,7 +68,7 @@ else
         nxgrid=10;
         x=mdlstruct.data;
         x_tmp=[];
-        for i=1:n_lags(1)
+        for i=1:1%n_lags(1) %!!!
             x_tmp = [x_tmp linspace(0*min(x(:,indX)),max(x(:,indX)),nxgrid)'];
             
         end
@@ -77,7 +77,7 @@ else
         
         x_grid_tmp = [];
         for i=1:n_dim
-            x_grid_tmp = [x_grid_tmp repmat(mean(x),nxgrid^2,n_lags(i))];
+            x_grid_tmp = [x_grid_tmp repmat(mean(x(:,i)),nxgrid^2,n_lags(i))];
             
         end
         

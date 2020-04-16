@@ -43,8 +43,8 @@ else
 end
 
 
-
-n_dim = size(input,2);
+n_dim_input = size(input,2);
+n_dim_output = size(output,2);
 tau = 1;
 
 nlags = 1; % number of lags for each covariables
@@ -78,13 +78,13 @@ zOut=(z-mOut)./(sdOut+eps);
 
 
 %% GP hyperparameters optim;
-LenScale=.05*ones(1,nlags*n_dim);
+LenScale=.05*ones(1,nlags*n_dim_input);
 ve=.00000001;
 gp_tau=10;
 pars=[log(LenScale) log(ve/(1-ve)) log(gp_tau)]';
 
 %     cond0 = 0;
-for i=1:n_dim
+for i=1:n_dim_output
     
     lpost=@(p) GP4DP(p,x,zOut(:,i),[],[],cond_0,cond_j_0,cond_j_1,0);
     [pfit,nll]=fmingrad_Rprop(lpost,pars);
@@ -101,7 +101,7 @@ value_function.gp.cond_j_0=cond_j_0;
 value_function.gp.cond_j_1=cond_j_1;
 
 value_function.gp.gp_handle=GP;
-value_function.gp.n_dim=n_dim;
+value_function.gp.n_dim=n_dim_output;
 value_function.gp.lengthscales=phi;
 value_function.gp.pfit=Pfit;
 value_function.gp.nll=Nll;
