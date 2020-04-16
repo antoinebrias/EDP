@@ -167,3 +167,15 @@ else
     
     
 end
+
+disp('**********************************************************')
+disp(['Negative log likelihood: ' num2str(mdlstruct.gp.nll)])
+disp(' ')
+disp(['Lengthscale parameters:'])
+disp( num2str(mdlstruct.gp.lengthscales))
+disp(' ')
+disp(['Scaled In-Sample error: ' num2str(mdlstruct.gp.is_err)])
+disp(' ')
+disp(['Scaled Out-of-Sample error: ' num2str(mdlstruct.gp.oos_err)])
+disp(' ')
+disp('**********************************************************')

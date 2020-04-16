@@ -1,20 +1,12 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Simulate controlled trajectories
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function traj = sim_trajectories(mdlstruct,optstruct,dpstruct,t_max,n_traj,start_x,is_display)
-% sim_trajectories  Reward function: reward on every species catched.
-%    sim_trajectories(mdlstruct,optstruct,dpstruct,t_max,n_traj,start_x,is_display)
-%   Return the reward, applying the control U on the current state X, with
-%   a weight WEIGHTS on each variable.
+% SIM_TRAJECTORIES   Simulate controlled trajectories according EDP results
+%   SIM_TRAJECTORIES(MDLSTRUCT,OPTSTRUCT,DPSTRUCT,T_MAX,N_TRAJ,START_X,IS_DISPLAY)
+%   simulates N_TRAJ starting from START_X, until time horizon T_MAX. At
+%   each step, the optimal control is computed thanks to the EDP policy.
+%   START_X may be a string: 'mean' for the mean point in the dataset,
+%   'last' for the last point in the dataset
 %
-%   TOTAL_REWARD is the sum of every species rewards. UNWEIGHTED_REWARD is
-%   a vector containing each individual reward.  WEIGHTED_REWARD is
-%   a vector containing each weighted individual reward.
-%
+%   IS_DISPLAY indicates if a figure containing the mean trajectory is produced.
 
 n_lags = mdlstruct.n_lags;
 ind_available_var = mdlstruct.ind_available_var;
@@ -141,5 +133,11 @@ if is_display
 end
 
 
+disp('**********************************************************')
+disp(['Theorical value: ' num2str(mean(traj.th_value))])
+disp(' ')
+disp(['Simulated mean value: ' num2str(mean(traj.value))])
+disp(' ')
+disp('**********************************************************')
 
 end

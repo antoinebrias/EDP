@@ -53,7 +53,7 @@ if mdlstruct.n_dim>1
         
         
         grid on;  box on
-        colorbar 
+        colorbar on
     end
     
 else

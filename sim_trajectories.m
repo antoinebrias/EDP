@@ -3,6 +3,8 @@ function traj = sim_trajectories(mdlstruct,optstruct,dpstruct,t_max,n_traj,start
 %   SIM_TRAJECTORIES(MDLSTRUCT,OPTSTRUCT,DPSTRUCT,T_MAX,N_TRAJ,START_X,IS_DISPLAY)
 %   simulates N_TRAJ starting from START_X, until time horizon T_MAX. At
 %   each step, the optimal control is computed thanks to the EDP policy.
+%   START_X may be a string: 'mean' for the mean point in the dataset,
+%   'last' for the last point in the dataset, or a vector.
 %
 %   IS_DISPLAY indicates if a figure containing the mean trajectory is produced.
 
@@ -123,7 +125,7 @@ if is_display
     subplot(pplot(1),pplot(2),n_real_dim+1);
     hold on
     plot(mean_v,'g','Linewidth',2);
-    legend('cumulative reward');
+%     legend('cumulative reward');
     xlabel('Time')
     ylabel('Reward')
     grid on;  box on
@@ -131,5 +133,11 @@ if is_display
 end
 
 
+disp('**********************************************************')
+disp(['Theorical value: ' num2str(mean(traj.th_value))])
+disp(' ')
+disp(['Simulated mean value: ' num2str(mean(traj.value))])
+disp(' ')
+disp('**********************************************************')
 
 end
