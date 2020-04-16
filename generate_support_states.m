@@ -6,7 +6,9 @@
 
 
 function [dpstruct] = generate_support_states(mdlstruct,dpstruct)
-n_lags_max = mdlstruct.n_lags_max;
+n_lags = mdlstruct.n_lags;
+ind_available_var = mdlstruct.ind_available_var;
+
 
 if ~isfield(dpstruct,'n_support_states')
     % number of support states
@@ -19,17 +21,13 @@ if isfield(dpstruct,'n_support_states')
         case 'grid'
             %% to do
         case 'random'
-            maxdata = repelem(max(mdlstruct.data),1,n_lags_max);
-            mindata = repelem(min(mdlstruct.data),1,n_lags_max);
-            dpstruct.support_states = rand(dpstruct.n_support_states,mdlstruct.n_lags_max.*mdlstruct.n_dim ).*(maxdata-mindata)-mindata;
+            support_states_tmp = [];
+            for i=1:mdlstruct.n_dim
+            maxdata = repelem(max(mdlstruct.data(:,ind_available_var(i))),1,n_lags(ind_available_var(i)));
+            mindata = repelem(min(mdlstruct.data(:,ind_available_var(i))),1,n_lags(ind_available_var(i)));
+            support_states_tmp = [support_states_tmp rand(dpstruct.n_support_states,mdlstruct.n_lags(ind_available_var(i)) ).*(maxdata-mindata)-mindata];
             
-            
-    end
-else
-    % default case
-    maxdata = repelem(max(mdlstruct.data),1,n_lags_max);
-    mindata = repelem(min(mdlstruct.data),1,n_lags_max);
-    dpstruct.support_states = rand(dpstruct.n_support_states,mdlstruct.n_lags_max.*mdlstruct.n_dim ).*(maxdata-mindata)-mindata;
-    dpstruct.generating_support_states_method ='random';
+            end
+             dpstruct.support_states =support_states_tmp;
 end
 end

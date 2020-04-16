@@ -4,8 +4,8 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 function [mu,v] = post_gp(x,u,is_det,gp)
+% function [mu,v] = post_gp(x,u,is_det,is_hist,gp)
 
 s= x.*(1-u); % need to be changed for different types of control
 
@@ -38,6 +38,14 @@ if ~is_det
         mu = normrnd(muTmp,sqrt(v));
     end
 end
+
+% if is_hist
+%    % return [X_{t+1} X_{t} X_{t-1} ...] (GP regression)
+% else
+%    % return only X_{t+1} (value fct GP)
+%     
+% end
+
 
 end
 

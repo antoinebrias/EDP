@@ -78,10 +78,78 @@ if mdlstruct.n_dim>1
     end
     
 else
+    if mdlstruct.n_dim==1
+        if mdlstruct.n_lags(mdlstruct.ind_available_var(1))>1
+            
+                     
+            
+        else
+            nxgrid=100;
+            x=mdlstruct.data;
+            x1d = [linspace(0*min(x(:,1)),max(x(:,1)),nxgrid)]';
+            
+            [x1d1] = x1d;
+            
+            
+            xgrid(:,1)=x1d1(:);
+            
+            M = xgrid;
+            
+            figure;
+            
+            
+            
+            name = mdlstruct.name;
+            n_dim = mdlstruct.n_dim;
+            data = mdlstruct.data;
+            
+            if isfield(mdlstruct,'gp_model')
+                [mu_gp,v_gp] = mdlstruct.gp_model(M,M*0,1);
+                
+            end
+            
+            hold on;
+            
+            if  ~isfield(mdlstruct,'var_availability') & isfield(mdlstruct,'model')
+                [mu,v] = mdlstruct.model(M,M*0,1);
+            end
+            
+            [pplot,nplot]=numSubplots(n_dim);
+    for i=1:n_dim
+            subplot(pplot(1),pplot(2),i);
+        
+        if isfield(mdlstruct,'gp_model')
+            plot(x1d1,mu_gp(:,i))
+        end
+        
+        hold on;
+        
+        if  ~isfield(mdlstruct,'var_availability') & isfield(mdlstruct,'model')
+            plot(x1d1,mu(:,i))
+        end
+        
+        
+       
     
-    % to do
+        
+        switch mdlstruct.control_type
+            case 'rate'
+                  plot(mdlstruct.data(1:end-1,1).*(1-mdlstruct.control_data(1:end-1,1)),mdlstruct.data(2:end,i),'rx')
+        
+            case 'single'
+                % to do
+            case 'global'
+                % to do
+                
+        end
+        
+%         legend(name{i},leg_control);
+        
+        grid on;  box on
+    end
+    
+        end
 end
-
 
 
 

@@ -5,12 +5,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy(x,optstruct,dpstruct)
+function [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy(x,optstruct,dpstruct,mdlstruct)
 
 %% One-step ahead DP problem
 % solve the one-step ahead DP equation by looking for the control
 % maximizing fun_optim_td
-fOptTD = @(control) fun_optim_td (x,control,dpstruct.value_function,dpstruct.model,optstruct,dpstruct);
+fOptTD = @(control) fun_optim_td (x,control,dpstruct.value_function,dpstruct.model,optstruct,mdlstruct);
 
 ftd = [];
 

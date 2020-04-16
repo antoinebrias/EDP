@@ -6,25 +6,37 @@
 
 
 function [dpstruct] = generate_support_states(mdlstruct,dpstruct)
-
+n_lags_max = mdlstruct.n_lags_max;
+% Index of first column of each species (used with TD dim)
+if length(n_lags_max)>1
+indFirst=unique(cumsum(n_lags_max)-n_lags_max+ones(1,length(n_lags_max)));
+indFirst(indFirst>sum(n_lags_max))=[];
+nDim=sum(n_lags_max);
+indnTD=find(n_lags_max>0);
+end
 
 if ~isfield(dpstruct,'n_support_states')
-% number of support states
-dpstruct.n_support_states=50;
+    % number of support states
+    dpstruct.n_support_states=50;
 end
 
-switch generating_support_states_method
-    case 'grid'
-        
-    case 'random'
-        maxdata = repmat(max(),1,n_lags_max)repelem(a,1,2)
-        mindata = 
-       dpstruct.support_states = rand(dpstruct.n_support_states,mdlstruct.n_lags_max.*mdlstruct.n_dim ).*(max()-min())-min();
-end
-% How to generate the support states used here
-% 'random' -> randomely generated 
-% 'grid'   -> create a grid of support states (number of points on each dimension equal to dpstruct.nb_support_states^(1/n) (round to lower))
-dpstruct.generating_support_states_method = 'random';
-dpstruct = generate_support_states(mdlstruct,dpstruct);
 
+if isfield(dpstruct,'n_support_states')
+    switch dpstruct.generating_support_states_method
+        case 'grid'
+            %% to do
+        case 'random'
+            maxdata = repelem(max(mdlstruct.data),1,n_lags_max);
+            mindata = repelem(min(mdlstruct.data),1,n_lags_max);
+            dpstruct.support_states = rand(dpstruct.n_support_states,mdlstruct.n_lags_max.*mdlstruct.n_dim ).*(maxdata-mindata)-mindata;
+            
+            
+    end
+else
+    % default case
+    maxdata = repelem(max(mdlstruct.data),1,n_lags_max);
+    mindata = repelem(min(mdlstruct.data),1,n_lags_max);
+    dpstruct.support_states = rand(dpstruct.n_support_states,mdlstruct.n_lags_max.*mdlstruct.n_dim ).*(maxdata-mindata)-mindata;
+    dpstruct.generating_support_states_method ='random';
+end
 end

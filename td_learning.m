@@ -8,7 +8,11 @@
 
 function [dpstruct] = td_learning(mdlstruct,optstruct,dpstruct,name_model)
 
-
+%% Embedded dimensions parameters
+n_lags = mdlstruct.n_lags;
+ind_available_var = mdlstruct.ind_available_var;
+ind_current_var = mdlstruct.ind_current_var;
+n_dim=mdlstruct.n_dim;
 
 %% optimal control problem parameters
 % Discount factor
@@ -122,7 +126,7 @@ for n_out=1:n_out_max
         %% One-step ahead DP problem
         % solve the one-step ahead DP equation by looking for the control
         % maximizing fun_optim_td
-        fOptTD = @(control) fun_optim_td (support_states,control,value_function,model,optstruct,dpstruct);
+        fOptTD = @(control) fun_optim_td (support_states,control,value_function,model,optstruct,mdlstruct);
         
         ftd = [];
         
@@ -143,7 +147,7 @@ for n_out=1:n_out_max
         %% Computing temporal difference
         
         if n_out==1 & isempty(value_function)
-            [vTD(:,n_in),vI(:,:,n_in)]=  reward(ss,ss.*0,weights);
+            [vTD(:,n_in),vI(:,:,n_in)]=  reward(ss(:,ind_available_var),ss(:,ind_available_var).*0,weights);
         else
             [muV,vV]=value_function.gp_model(ss,1);
             vI(:,:,n_in)=muV;
@@ -172,9 +176,14 @@ for n_out=1:n_out_max
         nextX = mu;
         nextX(nextX<0 )=0;
         
-        ssNew = nextX;
-        ss=ssNew;
         
+        ssNew=[];
+        for i=1:n_dim
+            xtmp = [nextX(:,i) ss(:,n_lags(ind_available_var(i))+1:n_lags*(ind_available_var(i)))];
+            ssNew=[ssNew xtmp];
+        end
+        
+        ss=ssNew;
         %         if n_in ==1
         %             Usave =currentU;
         %         end
