@@ -154,7 +154,7 @@ else
             
             switch mdlstruct.control_type
                 case 'rate'
-                    plot3(x_lag(1:end-1,indX).*(1-mdlstruct.control_data(1:end-1,1)*(indX==1)),x_lag(1:end-1,indY).*(1-mdlstruct.control_data(1:end-1,1)*(indY==1)),mdlstruct.data(2:end,i),'rx')
+                    plot3(x_lag(1:end-1,indX).*(1-mdlstruct.control_data(1:end-1,indX)),mdlstruct.data(1:end-1,indY).*(1-mdlstruct.control_data(1:end-1,indY)),mdlstruct.data(2:end,i),'rx')
                     
                 case 'single'
                     % to do
@@ -167,7 +167,7 @@ else
             
             grid on;  box on
         end
-        hold off
+        
         
     else
         nxgrid=100;
