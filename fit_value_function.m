@@ -1,6 +1,6 @@
-function value_function = fit_value_function(value_function,input,output)
+function value_function = fit_value_function(value_function,input,output,mdlstruct)
 % FIT_VALUE_FUNCTION   Gaussian Process regression for value function.
-%    VALUE_FUNCTION = FIT_VALUE_FUNCTION(VALUE_FUNCTION,INPUT,OUTPUT) fits
+%    VALUE_FUNCTION = FIT_VALUE_FUNCTION(VALUE_FUNCTION,INPUT,OUTPUT,MDLSTRUCT) fits
 %    a Gaussan Process on the states in INPUT with their value in OUTPUT.
 %    
 %   As output, you will find:
@@ -58,6 +58,15 @@ tau = 1;
 nlags = 1; % number of lags for each covariables
 
 
+n_dim = mdlstruct.n_dim;
+tau = mdlstruct.tau;
+
+n_lags = mdlstruct.n_lags; % number of lags for each covariables
+
+% Index of first column of each species (used with TD dim)
+ind_available_var=find(n_lags>0);
+ind_current_var=unique(cumsum(n_lags)-n_lags+ones(1,length(n_lags)));
+ind_current_var(ind_current_var>sum(n_lags))=[];
 
 % data normalization
 mIn=min(input)*1;
@@ -108,6 +117,7 @@ value_function.gp.cond_0=cond_0;
 value_function.gp.cond_j_0=cond_j_0;
 value_function.gp.cond_j_1=cond_j_1;
 
+value_function.gp.ind_available_var=ind_available_var;
 value_function.gp.gp_handle=GP;
 value_function.gp.n_dim=n_dim_output;
 value_function.gp.lengthscales=phi;

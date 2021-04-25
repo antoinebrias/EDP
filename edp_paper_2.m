@@ -5,8 +5,8 @@ rng('default');
 rng(1);
 
 
-data = load('C:\Users\Renaud\Documents\MATLAB\edp2\ricker1.mat');
-% data = load('C:\Users\Renaud\Documents\MATLAB\edp2\sailalorda1.mat');
+% data = load('C:\Users\Renaud\Documents\MATLAB\edp2\ricker1.mat');
+ data = load('C:\Users\Renaud\Documents\MATLAB\edp2\sailalorda1.mat');
 
 
 

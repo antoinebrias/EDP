@@ -104,7 +104,9 @@ else
             xtmp = hankel_matrix(x,[0:mdlstruct.tau:mdlstruct.tau*(mdlstruct.n_lags(mdlstruct.ind_available_var(i))-1)]);
             x_lag=[x_lag xtmp(:,1:end)];
         end
-        
+        control_data = mdlstruct.control_data;
+        control_data(any(isnan(x_lag), 2), :) = [];
+       x_lag(any(isnan(x_lag), 2), :) = [];
         
         
         x1d = [linspace(0*min(x_lag(:,indX)),max(x_lag(:,indX)),nxgrid);linspace(0*min(x_lag(:,indY)),max(x_lag(:,indY)),nxgrid)]';
@@ -154,7 +156,7 @@ else
             
             switch mdlstruct.control_type
                 case 'rate'
-                    plot3(x_lag(1:end-1,indX).*(1-mdlstruct.control_data(1:end-1,1)*(indX==1)),x_lag(1:end-1,indY).*(1-mdlstruct.control_data(1:end-1,1)*(indY==1)),mdlstruct.data(2:end,i),'rx')
+                    plot3(x_lag(1:end-1,indX).*(1-control_data(1:end-1,1)*(indX==1)),x_lag(1:end-1,indY).*(1-control_data(1:end-1,1)*(indY==1)),x_lag(2:end,i),'rx')
                     
                 case 'single'
                     % to do

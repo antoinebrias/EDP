@@ -54,7 +54,7 @@ switch mdlstruct.control_type
         if iscell(mdlstruct.control_param)
             
         else
-            for i = 1:n_dim
+            for i = 1:length(ind_available_var) % !!!14/04/2021 change n_dim
                 %                 Input(:,i) = Data((n_lags-1)*tau+1:end-tau,i).*(1-Control((n_lags-1)*tau+1:end-tau,i)*mdlstruct.control_param(i));
                 %                 Output(:,i)= Data(n_lags*tau+1:end,i);
                 
@@ -83,7 +83,7 @@ s_in = Input;
 y = Output;
 %% Lag matrix construction
 x = [];
-for i=1:n_dim
+for i=1:length(ind_available_var) % !!!14/04/2021 change n_dim
     %lag matrix
     xtmp = hankel_matrix((Input(:,i)-mIn(i))/(sdIn(i)+eps),[0:tau:tau*(n_lags(ind_available_var(i))-1)]);
     x=[x xtmp(:,1:end)];
@@ -124,7 +124,7 @@ pars=[log(LenScale) log(ve/(1-ve)) log(gp_tau)]';
 
 %
 %
-for i=1:n_dim
+for i=1:length(ind_available_var) % !!!14/04/2021 change n_dim
     
     lpost=@(p) GP4DP(p,x,zOut(:,i),[],[],cond0,Condj0,Condj1,0);
     [pfit,nll]=fmingrad_Rprop(lpost,pars);
@@ -157,6 +157,7 @@ end
 mdlstruct.ind_available_var =ind_available_var;
 mdlstruct.ind_current_var=ind_current_var;
 
+mdlstruct.gp.ind_available_var=ind_available_var;
 mdlstruct.gp.is_err=errIS;
 mdlstruct.gp.oos_err=errOS;
 mdlstruct.gp.gp_handle=GP;

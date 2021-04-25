@@ -11,7 +11,7 @@ u = zeros(1,2);
 for t = 2:T
     x(t,:)=competition(x(t-1,:),u(t-1,:),2.12);
     
-    u(t,:) =  0.5*rand(1,2);
+    u(t,:) =  0.2*rand(1,2);
 end
 
 figure; plot(x(1:end-1,1),x(2:end,1),'x')
@@ -40,7 +40,7 @@ data_show(mdlstruct)
 % we specify the number of lags used here
 % here, we specify the number of time lags used for each variables
 % 0 means that the variable is not used in the prediction
-mdlstruct.n_lags = [1 1];
+mdlstruct.n_lags = [2 0];
 
 % GP regression
 disp('*****************************************************')
@@ -71,7 +71,7 @@ disp('*****************************************************')
 optstruct.discount_factor=0.95;
 
 % Objective weights
-optstruct.weights = [0.5 0.5];
+optstruct.weights = [1 0];
 
 
 % Reward function

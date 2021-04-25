@@ -1,6 +1,6 @@
 function [mu,v] = dyn_migration(x,u,is_det,param)
-% DYN_COMPETITION  Migration model.
-%   [MU,V] = DYN_COMPETITION(X,U,IS_DET,PARAM) computes the next state of a 
+% DYN_MIGRATION  Migration model.
+%   [MU,V] = DYN_MIGRATION(X,U,IS_DET,PARAM) computes the next state of a 
 %   system in a current state X following a migration dynamics. U is the
 %   fraction of X catched. IS_DET is a boolean indicating if the result is
 %   the deterministic mean or a sample. PARAM is a cell array containing the
@@ -24,6 +24,9 @@ b= param{4};
 
 
 mu = s*diag(r).*exp((1-is_det)*normrnd(0,sigma,size(s,1),size(s,2))).*(1+(s*[1 m(1); m(2) 1]).^b).^-1;
+mu = s*diag(r).*exp((1-is_det)*normrnd(0,sigma,size(s,1),size(s,2))).*(1+(s*[1 m(1); m(2) 1]).^b).^-1;
+
+
 v = repmat(sigma.^2,size(x,1),1);
 
 

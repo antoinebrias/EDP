@@ -15,7 +15,7 @@ s= x.*(1-u); % !!! need to be changed for different types of control
 
 snorm = (s-gp.mIn)./(gp.sdIn);
 
-for i=1:gp.n_dim
+for i=1:length(gp.ind_available_var) % !!!! 16/04/21 change gp.n_dim
     [~,~,out]=gp.gp_handle{i}(snorm);
     muTmp(:,i)=out.pred*gp.sdOut(i)+gp.mOut(i);
     if gp.is_log==1

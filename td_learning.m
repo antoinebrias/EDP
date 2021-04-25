@@ -184,6 +184,17 @@ for n_out=1:n_out_max
         end
         
         ss=ssNew;
+        
+        
+%         if n_lags(i)==1
+%             ssNew = [ssNew mu(:,i)  X{t-1}(:,ind_available_var(i)).*(1-tmp_control(:,ind_available_var(i)))];
+%         else
+%             if n_lags(i)>1
+%                 ssNew = [ssNew mu(:,i)  X{t-1}(:,ind_available_var(i)).*(1-tmp_control(:,ind_available_var(i))) X{t-1}(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-2)];
+%             end
+%         end
+%            ss=ssNew;
+        
         %         if n_in ==1
         %             Usave =currentU;
         %         end
@@ -193,7 +204,7 @@ for n_out=1:n_out_max
     
     if n_out==1
         
-        value_function = fit_value_function(value_function,ssInit,vI(:,:,1));
+        value_function = fit_value_function(value_function,ssInit,vI(:,:,1),mdlstruct);
         alphaOuter=1;
         
         
@@ -205,7 +216,7 @@ for n_out=1:n_out_max
         vCurrent = ((1-alphaOuter)*vIPrev+alphaOuter*vI(:,:,1));
         
         
-        value_function = fit_value_function(value_function,ssInit,vCurrent);
+        value_function = fit_value_function(value_function,ssInit,vCurrent,mdlstruct);
         
     end
     

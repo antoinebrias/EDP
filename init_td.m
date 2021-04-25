@@ -41,6 +41,9 @@ dpstruct.n_in_max = 1;
 % debug mode with additionnal display during the computation
 dpstruct.debug = 0;
 
+%embedded dimension information
+dpstruct.ind_available_var = mdlstruct.ind_available_var;
+
 
 end
 

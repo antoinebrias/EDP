@@ -28,21 +28,8 @@ currentX = SS;
 
  nextX=[];
         for i=1:n_dim
-            if n_lags(i)==1
-                % one lag: nextX = mu
-                 xtmp = [mu(:,i)];
-%                  xtmp = [mu(:,i) currentX(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i)))];
-            else
-                 if n_lags(i)==2
-                     % 2 lags: nextX =[mu X(1-U)]
-                 xtmp = [mu(:,i) currentX(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i)))];
-%                 xtmp = [mu(:,i)  currentX(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i))) currentX(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-1)];
-                 else
-                     % number of lags over 2: nextX =[mu X(1-U) S ....]
-                     xtmp = [mu(:,i)  currentX(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i))) currentX(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-1)];
-                     
-                 end
-            end
+            if n_lags(i)<1
+            xtmp = [mu(:,i) currentX(:,n_lags(ind_available_var(i))+1:n_lags*(ind_available_var(i)))];
             nextX=[nextX xtmp];
         end
         
