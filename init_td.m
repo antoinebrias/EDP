@@ -25,7 +25,7 @@ dpstruct.n_support_states=20;
 % How to generate the support states used here
 % 'random' -> randomely generated 
 % 'grid'   -> create a grid of support states (number of points on each dimension equal to dpstruct.nb_support_states^(1/n) (round to lower))
-dpstruct.generating_support_states_method = 'random';
+dpstruct.generating_support_states_method = 'random';%'random';%'grid'
 if nargin==1
 dpstruct = generate_support_states(mdlstruct,dpstruct);
 end
@@ -33,16 +33,18 @@ end
 dpstruct.lambda=0.9;
 
 % outer loop number of iterations
-dpstruct.n_out_max = 50;
+dpstruct.n_out_max = 20;
 
 % inner loop number of iterations
-dpstruct.n_in_max = 1;
+dpstruct.n_in_max = 2;
 
 % debug mode with additionnal display during the computation
 dpstruct.debug = 0;
 
 %embedded dimension information
 dpstruct.ind_available_var = mdlstruct.ind_available_var;
+
+
 
 
 end

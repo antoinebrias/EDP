@@ -78,7 +78,7 @@ end
 
 % data normalization
 mIn=0.*min(Input);
-sdIn=1+0.*(max(Input)-1*min(Input));
+sdIn=0.*(max(Input)-1*min(Input);
 
 
 % %% Change 25/11/2021
@@ -119,11 +119,11 @@ else
 end
 
 %
-% mOut=min(z);%min(z); %%%%%% CHANGE 18/11/21
-% sdOut=std(z);
-
-mOut=mean(z);%min(z); %%%%%% CHANGE 25/11/21
+mOut=min(z);%min(z); %%%%%% CHANGE 18/11/21
 sdOut=std(z);
+
+% mOut=mean(z);%min(z); %%%%%% CHANGE 25/11/21
+% sdOut=std(z);
 
 
 zOut=(z-mOut)./(sdOut+eps);

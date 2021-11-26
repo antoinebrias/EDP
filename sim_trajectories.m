@@ -94,6 +94,7 @@ for t=2:t_max
         if isfield(mdlstruct,'gp_model')
             %             X{t} =mdlstruct.gp_model(X{t-1},opt_control{t-1},0);
             tmp_X =mdlstruct.gp_model(X{t-1},opt_control{t-1},0);
+            tmp_X(tmp_X<0) = 0;
             next_X = [];
             tmp_control = opt_control{t-1};
             for i= 1:size(mdlstruct.data,2)
@@ -158,7 +159,11 @@ if is_display
     
     mean_x = squeeze(mean(traj.data,2));
     mean_catch = squeeze(mean(traj.data(:,:,ind_available_var).*traj.control,2));
+    if n_traj>1
     mean_v = squeeze(mean(traj.instant_cum_value'));
+    else
+            mean_v = squeeze(traj.instant_cum_value');
+    end
     figure
     title('Mean trajectory')
     hold on

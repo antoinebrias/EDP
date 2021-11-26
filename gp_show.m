@@ -16,7 +16,7 @@ if mdlstruct.n_dim>1
         indY = 2;
     end
     
-    nxgrid=10;
+    nxgrid=100;
     x=mdlstruct.data;
     x1d = [linspace(0*min(x(:,indX)),max(x(:,indX)),nxgrid);linspace(0*min(x(:,indY)),max(x(:,indY)),nxgrid)]';
     
@@ -70,7 +70,7 @@ if mdlstruct.n_dim>1
         switch mdlstruct.control_type
             case 'rate'
                 plot3(mdlstruct.data(1:end-1,indX).*(1-mdlstruct.control_data(1:end-1,indX)),mdlstruct.data(1:end-1,indY).*(1-mdlstruct.control_data(1:end-1,indY)),mdlstruct.data(2:end,i),'rx')
-                
+ 
             case 'single'
                 % to do
             case 'global'
@@ -93,7 +93,7 @@ else
             indY = 2;
         end
         
-        nxgrid=10;
+        nxgrid=100;
         x=mdlstruct.data;
         
         
@@ -156,8 +156,16 @@ else
             
             switch mdlstruct.control_type
                 case 'rate'
-                    plot3(x_lag(1:end-1,indX).*(1-control_data(1:end-1,1)*(indX==1)),x_lag(1:end-1,indY).*(1-control_data(1:end-1,1)*(indY==1)),x_lag(2:end,i),'rx')
+%                     plot3(x_lag(1:end-1,indX).*(1-control_data(1:end-1,1)*(indX==1)),x_lag(1:end-1,indY).*(1-control_data(1:end-1,1)*(indY==1)),x_lag(2:end,i),'rx')
+              
                     
+                    plot3(x_lag(1:end-1,indX),x_lag(1:end-1,indY),x_lag(2:end,i),'rx')
+            
+                    
+                    
+                    xlabel('x_{t}')
+                ylabel('x_{t-1}')
+                zlabel('x_{t+1}')
                 case 'single'
                     % to do
                 case 'global'

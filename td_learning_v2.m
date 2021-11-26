@@ -1,4 +1,4 @@
-function [dpstruct] = td_learning(mdlstruct,optstruct,dpstruct,name_model)
+function [dpstruct] = td_learning_v2(mdlstruct,optstruct,dpstruct,name_model)
 % TD_LEARNING  Approximate dynamic programming using temporal difference algorithm.
 %    [DPSTRUCT] = TD_LEARNING(MDLSTRUCT,OPTSTRUCT,DPSTRUCT,NAME_MODEL) generates
 %    the value function used to determine near-optimal policy, based on a
@@ -67,7 +67,7 @@ end
 
 
 % control grid
-nU = 100;
+nU = 40;
 U=linspace(0,0.999,nU);
 [~,uWeightsInd]=find(mdlstruct.control_param>0);
 switch mdlstruct.control_type
@@ -126,7 +126,7 @@ for n_out=1:n_out_max
         %% One-step ahead DP problem
         % solve the one-step ahead DP equation by looking for the control
         % maximizing fun_optim_td
-        fOptTD = @(control) fun_optim_td (ss,control,value_function,model,optstruct,mdlstruct);
+        fOptTD = @(control) fun_optim_td_v2 (ss,control,value_function,model,optstruct,mdlstruct);
         
         ftd = [];
         
@@ -184,7 +184,7 @@ for n_out=1:n_out_max
 %         vI(vI<0)=0;
         
         %% Simulating trajectories
-        [mu,~]=model(ss,currentU,0);
+        [mu,~]=model(ss,ss.*0,0);
 %         nextX = mu;
 %         nextX(nextX<0 )=0;
         
@@ -197,14 +197,14 @@ for n_out=1:n_out_max
            
            if n_lags(i)==1
                % one lag: nextX = mu
-               xtmp = [mu(:,i)];
+               xtmp = [mu(:,i).*(1-currentU(:,ind_available_var(i)))];
            else
                if n_lags(i)==2
 %                     xtmp = [mu(:,i) ss(:,ind_available_var(i))];
-                   xtmp = [mu(:,i) ss(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i)))];
+                   xtmp = [mu(:,i).*(1-currentU(:,ind_available_var(i))) ss(:,ind_available_var(i))];
                else
 %                     xtmp = [mu(:,i) ss(:,ind_available_var(i)) ss(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-1)];
-                   xtmp = [mu(:,i) ss(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i))) ss(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-1)];
+                   xtmp = [mu(:,i).*(1-currentU(:,ind_available_var(i))) ss(:,ind_available_var(i)) ss(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-1)];
              
                end
            end
@@ -240,7 +240,7 @@ for n_out=1:n_out_max
           
     else
         %We update the GP according the new values of the support states
-        alphaOuter=1;%5/(5+n_out-2); % harmonic
+        alphaOuter=0.8;5/(5+n_out-2); % harmonic
         
         [muV,vV]=eval_value_function(value_function,ssInit);
 %         [muV,vV]=value_function.gp_model(ssInit,1);
@@ -282,7 +282,7 @@ for n_out=1:n_out_max
     
 end
 
-figure;plot(v_curr)
+% figure;plot(v_curr)
 
 dpstruct.model = model;
 dpstruct.control_grid=control_grid;

@@ -107,17 +107,23 @@ is_disp = 1; % display the trajectories result
  disp('Controlled trajectories following the EDP policy')
 traj = sim_trajectories(mdlstruct,optstruct,dpstruct,t_max,n_traj,start_x,is_disp);
 
-% Pareto front
-disp('*****************************************************')
-disp('Pareto front')
-disp('*****************************************************')
-n_pareto = 10;
-pareto = pareto_front(mdlstruct,optstruct,dpstruct,n_pareto,'gp');
 
-% % control map for different Pareto weights
-% td_show(mdlstruct,pareto.optstruct{1},pareto.dpstruct{1})
-% td_show(mdlstruct,pareto.optstruct{end},pareto.dpstruct{end})
 
+
+
+
+% 
+% % Pareto front
+% disp('*****************************************************')
+% disp('Pareto front')
+% disp('*****************************************************')
+% n_pareto = 10;
+% pareto = pareto_front(mdlstruct,optstruct,dpstruct,n_pareto,'gp');
+% 
+% % % control map for different Pareto weights
+% % td_show(mdlstruct,pareto.optstruct{1},pareto.dpstruct{1})
+% % td_show(mdlstruct,pareto.optstruct{end},pareto.dpstruct{end})
+% 
 
 
 

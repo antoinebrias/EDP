@@ -34,8 +34,8 @@ ind_current_var=unique(cumsum(n_lags)-n_lags+ones(1,length(n_lags)));
 ind_current_var(ind_current_var>sum(n_lags))=[];
 
 % data normalization
-mIn=0;%min(input)*1;
-sdIn=1;%max(input)-1*min(input);
+mIn=min(input)*1;
+sdIn=max(input)-1*min(input);
 
 
 %%
@@ -45,10 +45,6 @@ x = (input - mIn)./(sdIn+eps);
 
 x(any(isnan(x), 2), :) = [];
 
-% %%%% Change 25/11/2021
-% x = log(x+eps);
-% y = log(y+eps);
-% s_in = log(s_in+eps);
 
 if mdlstruct.is_value_function_log
     z = log(y./(s_in+eps)+eps);%log((Data(nlags*tau+1:end,:)+eps)./(Data((nlags-1)*tau+1:end-tau,:)+eps)+eps); % z = log(y/s)=f(s).
@@ -59,10 +55,6 @@ end
 %
 mOut=min(z);
 sdOut=std(z);
-
-% mOut=mean(z);%min(z); %%%%%% CHANGE 25/11/21
-% sdOut=std(z);
-
 
 zOut=(z-mOut)./(sdOut+eps);
 
@@ -82,7 +74,7 @@ switch mdlstruct.value_function_type
             % TD lambda parameter
             cond_0 = gp.cond_0;
         else
-            cond_0=0;
+            cond_0=1;
         end
         
         if isfield(gp,'cond_j_0')
@@ -103,7 +95,7 @@ switch mdlstruct.value_function_type
         
         %% GP hyperparameters optim;
         LenScale=.05*ones(1,nlags*n_dim_input);
-        ve=.000000001;
+        ve=.00000001;
         gp_tau=10;
         pars=[log(LenScale) log(ve/(1-ve)) log(gp_tau)]';
         
@@ -123,7 +115,6 @@ switch mdlstruct.value_function_type
         value_function.gp.cond_0=cond_0;
         value_function.gp.cond_j_0=cond_j_0;
         value_function.gp.cond_j_1=cond_j_1;
-        value_function.gp.is_value_function=1;
         
         value_function.gp.ind_available_var=ind_available_var;
         value_function.gp.gp_handle=GP;
@@ -144,17 +135,8 @@ switch mdlstruct.value_function_type
         % work only for 2d
   
          for i=1:n_dim_output
-        value_function.nn.nn_handle{i} = fitcknn(x,zOut(:,i),'NumNeighbors',1,'Standardize',1);
-         end
-         
-        value_function.nn.is_log = mdlstruct.is_value_function_log;
-        value_function.nn.ind_available_var=ind_available_var;
-        value_function.nn.n_dim=n_dim_output;
-        value_function.nn.mIn=mIn;
-        value_function.nn.sdIn=sdIn;
-        value_function.nn.mOut=mOut;
-        value_function.nn.sdOut=sdOut;
-        value_function.nn_model =  @(x) post_nn(x,0,value_function.nn);
+        value_function.nn = fitcknn(x,zOut,'NumNeighbors',1,'Standardize',1);
+        value_function.nn_model =  @(x) post_nn(x,value_function.nn);
        
         
 end

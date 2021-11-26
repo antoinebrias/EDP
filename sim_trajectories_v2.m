@@ -1,5 +1,6 @@
-function traj = sim_trajectories(mdlstruct,optstruct,dpstruct,t_max,n_traj,start_x,is_display)
-% SIM_TRAJECTORIES   Simulate controled trajectories according EDP results
+function traj = sim_trajectories_v2(mdlstruct,optstruct,dpstruct,t_max,n_traj,start_x,is_display)
+%  V2 CHANGES !!!!!!
+% SIM_TRAJECTORIES  V2  Simulate controled trajectories according EDP results
 %   SIM_TRAJECTORIES(MDLSTRUCT,OPTSTRUCT,DPSTRUCT,T_MAX,N_TRAJ,START_X,IS_DISPLAY)
 %   simulates N_TRAJ starting from START_X, until time horizon T_MAX. At
 %   each step, the optimal control is computed thanks to the EDP policy.
@@ -25,20 +26,20 @@ if ischar(start_x)
     switch start_x
         case 'last'
             if max(n_lags)==1
-            x_init = mdlstruct.data(end,:);
+                x_init = mdlstruct.data(end,:);
             else
                 for i= 1:size(mdlstruct.data,2)
-                x_init = [x_init mdlstruct.data(end:-1:end-n_lags(i)+1,:)'];
+                    x_init = [x_init mdlstruct.data(end:-1:end-n_lags(i)+1,:)'];
                 end
             end
         case 'mean'
-               if max(n_lags)==1
-            x_init = mean(mdlstruct.data);
-               else
-                   for i= 1:size(mdlstruct.data,2)
-                x_init = [x_init mean(mdlstruct.data).*ones(1,n_lags(i))];
+            if max(n_lags)==1
+                x_init = mean(mdlstruct.data);
+            else
+                for i= 1:size(mdlstruct.data,2)
+                    x_init = [x_init mean(mdlstruct.data).*ones(1,n_lags(i))];
                 end
-               end
+            end
     end
 else
     x_init = start_x;
@@ -49,7 +50,7 @@ tot_value = 0;
 tot_unweighted_value=zeros(1,n_dim);
 for t=2:t_max
     t
-    [opt_control_tmp,unweighted_opt_value,weighted_opt_value]=td_policy(X{t-1},optstruct,dpstruct,mdlstruct);
+    [opt_control_tmp,unweighted_opt_value,weighted_opt_value]=td_policy_v2(X{t-1},optstruct,dpstruct,mdlstruct);
     
     if  t==2
         traj.th_value = weighted_opt_value;
@@ -61,38 +62,67 @@ for t=2:t_max
     if isfield(mdlstruct,'model')
         % in this case the control must be set up to 0 for each variables
         % unused in the td learning
-     
+        
         tmp_control = zeros(n_traj,n_real_dim);
         tmp_control(:,ind_available_var) =    opt_control{t-1};
         
-%         X{t} = mdlstruct.model(X{t-1},tmp_control,0);
- 
+        %         X{t} = mdlstruct.model(X{t-1},tmp_control,0);
+        
         tmp_X = mdlstruct.model(X{t-1},tmp_control,0);
-             next_X = [];
-              for i= 1:size(mdlstruct.data,2)
-                 if n_lags(i)>1
-                     next_X = [next_X tmp_X(:,i) X{t-1}(:,ind_current_var(i):ind_current_var(i)+n_lags(i)-2)];
-                 else
-                     next_X = [next_X tmp_X(:,i)];
-                 end
-             end
-             X{t} = next_X;
+        next_X = [];
+        for i= 1:size(mdlstruct.data,2)
+            %                  if n_lags(i)>1
+            %                      next_X = [next_X tmp_X(:,i) X{t-1}(:,ind_current_var(i):ind_current_var(i)+n_lags(i)-2)];
+            %                  else
+            %                      next_X = [next_X tmp_X(:,i)];
+            %                  end
+            
+            if n_lags(i)==1
+                next_X = [next_X mu(:,i) tmp_X(:,i) X{t-1}(:,ind_available_var(i)).*(1-tmp_control(:,ind_available_var(i)))];
+            else
+                if n_lags(i)>1
+                    next_X = [next_X mu(:,i) tmp_X(:,i)  X{t-1}(:,ind_available_var(i)).*(1-tmp_control(:,ind_available_var(i))) X{t-1}(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-2)];
+                end
+            end
+            
+            
+            
+        end
+        X{t} = next_X;
         
         
     else
         if isfield(mdlstruct,'gp_model')
-%             X{t} =mdlstruct.gp_model(X{t-1},opt_control{t-1},0);
-             tmp_X =mdlstruct.gp_model(X{t-1},opt_control{t-1},0);
-             next_X = [];
-             for i= 1:size(mdlstruct.data,2)
-                 if n_lags(i)>1
-                     next_X = [next_X tmp_X(:,i) X{t-1}(:,ind_current_var(i):ind_current_var(i)+n_lags(i)-2)];
-                                      
-                 else
-                     next_X = [next_X tmp_X(:,i)];
-                 end
-             end
-             X{t} = next_X;
+            %             X{t} =mdlstruct.gp_model(X{t-1},opt_control{t-1},0);
+            tmp_X =mdlstruct.gp_model(X{t-1},opt_control{t-1},0);
+            tmp_X(tmp_X<0) = 0;
+            next_X = [];
+            tmp_control = opt_control{t-1};
+            for i= 1:size(mdlstruct.data,2)
+                %                  if n_lags(i)>1
+                %                      next_X = [next_X tmp_X(:,i) X{t-1}(:,ind_current_var(i):ind_current_var(i)+n_lags(i)-2)];
+                %
+                %                  else
+                %                      next_X = [next_X tmp_X(:,i)];
+                %                  end
+                
+                if n_lags(i)==1
+                    next_X = [next_X  tmp_X(:,i)];
+%                      next_X = [next_X  tmp_X(:,i) X{t-1}(:,ind_available_var(i)).*(1-tmp_control(:,ind_available_var(i)))];
+                else
+                    if n_lags(i)== 2
+                         next_X = [next_X  tmp_X(:,i) X{t-1}(:,ind_available_var(i)).*(1-tmp_control(:,ind_available_var(i)))];
+                    else
+                        % nlag>2
+%                            next_X = [next_X  tmp_X(:,i) X{t-1}(:,ind_available_var(i)).*(1-tmp_control(:,ind_available_var(i)))];
+                        next_X = [next_X tmp_X(:,i)  X{t-1}(:,ind_available_var(i)).*(1-tmp_control(:,ind_available_var(i))) X{t-1}(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-2)];
+                    end
+                end
+                
+                
+                
+            end
+            X{t} = next_X;
             
         end
     end
@@ -130,7 +160,11 @@ if is_display
     
     mean_x = squeeze(mean(traj.data,2));
     mean_catch = squeeze(mean(traj.data(:,:,ind_available_var).*traj.control,2));
+    if n_traj>1
     mean_v = squeeze(mean(traj.instant_cum_value'));
+    else
+            mean_v = squeeze(traj.instant_cum_value');
+    end
     figure
     title('Mean trajectory')
     hold on
@@ -143,8 +177,8 @@ if is_display
         switch mdlstruct.control_type
             case 'rate'
                 if n_lags(i) ~= 0
-                plot(mean_catch(:,i),'c','Linewidth',2);
-                leg_control = [name{i} ' catch'];
+                    plot(mean_catch(:,i),'c','Linewidth',2);
+                    leg_control = [name{i} ' catch'];
                 end
             case 'single'
                 % to do
@@ -163,7 +197,7 @@ if is_display
     subplot(pplot(1),pplot(2),n_real_dim+1);
     hold on
     plot(mean_v,'g','Linewidth',2);
-%     legend('cumulative reward');
+    %     legend('cumulative reward');
     xlabel('Time')
     ylabel('Reward')
     grid on;  box on

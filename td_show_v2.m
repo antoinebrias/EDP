@@ -1,4 +1,4 @@
-function []=td_show(mdlstruct,optstruct,dpstruct,indX,indY)
+function []=td_show_v2(mdlstruct,optstruct,dpstruct,indX,indY)
 % TD_SHOW  displays the control map obtained by the EDP policy
 %   []=TD_SHOW(MDLSTRUCT,OPTSTRUCT,DPSTRUCT,INDX,INDY)
 %    returns the slice of control map according the axis INDX and INDY
@@ -30,7 +30,7 @@ if mdlstruct.n_dim>1
     
     
     
-    [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy(M,optstruct,dpstruct,mdlstruct);
+    [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy_v2(M,optstruct,dpstruct,mdlstruct);
     
     
     figure;
@@ -76,7 +76,7 @@ else
         
         x_grid(:,indX)=x1d1(:);
         
-        [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy(x_grid,optstruct,dpstruct,mdlstruct);
+        [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy_v2(x_grid,optstruct,dpstruct,mdlstruct);
         
         
         figure;
@@ -127,7 +127,7 @@ else
         
         
         
-        [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy(x_grid,optstruct,dpstruct,mdlstruct);
+        [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy_v2(x_grid,optstruct,dpstruct,mdlstruct);
         
         
         figure;

@@ -1,4 +1,4 @@
-function [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy(x,optstruct,dpstruct,mdlstruct)
+function [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy_v2(x,optstruct,dpstruct,mdlstruct)
 % TD_POLICY  finds the optimal control given the TD value function and the
 % state of the system
 %    [OPT_CONTROL,UNWEIGHTED_OPT_VALUE,WEIGHTED_OPT_VALUE]=TD_POLICY(X,OPTSTRUCT,DPSTRUCT,MDLSTRUCT)
@@ -9,7 +9,7 @@ function [opt_control,unweighted_opt_value,weighted_opt_value]=td_policy(x,optst
 %% One-step ahead DP problem
 % solve the one-step ahead DP equation by looking for the control
 % maximizing fun_optim_td
-fOptTD = @(control) fun_optim_td (x,control,dpstruct.value_function,dpstruct.model,optstruct,mdlstruct);
+fOptTD = @(control) fun_optim_td_v2 (x,control,dpstruct.value_function,dpstruct.model,optstruct,mdlstruct);
 
 ftd = [];
 

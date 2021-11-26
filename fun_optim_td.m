@@ -21,6 +21,17 @@ SS= repelem(support_states,size(control,1),1);
 currentU=repmat(control,size(support_states,1),1);
 currentX = SS;
 
+
+
+update_u=[];
+for i=1:n_dim
+    utmp = [currentU(:,i) zeros(size(currentU,1),n_lags(ind_available_var(i))-1)];
+    update_u=[update_u utmp];
+end
+currentU = update_u;
+
+
+
 [mu,~]=model(currentX,currentU,1); % posterior mean
 % nextX = mu;%.*currentU;%.*currentU./(currentU+eps);
 
@@ -36,10 +47,19 @@ currentX = SS;
                  if n_lags(i)==2
                      % 2 lags: nextX =[mu X(1-U)]
                  xtmp = [mu(:,i) currentX(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i)))];
+                 
+%                  xtmp = [mu(:,i) currentX(:,ind_available_var(i))];
+                 
+                 
 %                 xtmp = [mu(:,i)  currentX(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i))) currentX(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-1)];
                  else
                      % number of lags over 2: nextX =[mu X(1-U) S ....]
                      xtmp = [mu(:,i)  currentX(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i))) currentX(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-1)];
+                    
+%                       xtmp = [mu(:,i)  currentX(:,ind_available_var(i)) currentX(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-1)];
+                      
+                     
+                     
                      
                  end
             end
@@ -53,9 +73,10 @@ if isempty(value_function)
 
 else
   
-    [resTotTmp,resUnweighted]=reward(currentX(:,ind_available_var),currentU,weights);
+    [resTotTmp,resUnweighted]=reward(currentX(:,ind_available_var),currentU(:,ind_available_var),weights);
   
-    [muV,~]=value_function.gp_model(nextX,1);
+%     [muV,~]=value_function.gp_model(nextX,1);
+    [muV,~]=eval_value_function(value_function,nextX);
     
     resV = muV*weights'; resVI = muV;
     

@@ -1,4 +1,4 @@
-function [res, resUnweighted] = fun_optim_td(support_states,control,value_function,model,optstruct,mdlstruct)
+function [res, resUnweighted] = fun_optim_td_v2(support_states,control,value_function,model,optstruct,mdlstruct)
 % FUN_OPTIM_TD   Value function of the one-step ahead Dynamic Programming
 % equation, which has to be optimized according the control.
 %    [RES, RESUNWEIGHTED] = FUN_OPTIM_TD(SUPPORT_STATES,CONTROL,VALUE_FUNCTION,MODEL,OPTSTRUCT,MDLSTRUCT) fits
@@ -32,7 +32,7 @@ currentU = update_u;
 
 
 
-[mu,~]=model(currentX,currentU,1); % posterior mean
+[mu,~]=model(currentX,currentX.*0,1); % posterior mean
 % nextX = mu;%.*currentU;%.*currentU./(currentU+eps);
 
 % nextX(nextX<0)=0;
@@ -41,14 +41,14 @@ currentU = update_u;
         for i=1:n_dim
             if n_lags(i)==1
                 % one lag: nextX = mu
-                 xtmp = [mu(:,i)];
+                 xtmp = [mu(:,i).*(1-currentU(:,ind_available_var(i)))];
 %                  xtmp = [mu(:,i) currentX(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i)))];
             else
                  if n_lags(i)==2
                      % 2 lags: nextX =[mu X(1-U)]
-                 xtmp = [mu(:,i) currentX(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i)))];
+%                  xtmp = [mu(:,i) currentX(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i)))];
                  
-%                  xtmp = [mu(:,i) currentX(:,ind_available_var(i))];
+                 xtmp = [mu(:,i).*(1-currentU(:,ind_available_var(i))) currentX(:,ind_available_var(i))];
                  
                  
 %                 xtmp = [mu(:,i)  currentX(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i))) currentX(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-1)];
@@ -56,7 +56,7 @@ currentU = update_u;
                      % number of lags over 2: nextX =[mu X(1-U) S ....]
 %                      xtmp = [mu(:,i)  currentX(:,ind_available_var(i)).*(1-currentU(:,ind_available_var(i))) currentX(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-1)];
                     
-                      xtmp = [mu(:,i)  currentX(:,ind_available_var(i)) currentX(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-1)];
+                      xtmp = [mu(:,i).*(1-currentU(:,ind_available_var(i)))  currentX(:,ind_available_var(i)) currentX(:,ind_available_var(i)+1:ind_available_var(i)+n_lags(i)-1)];
                       
                      
                      
@@ -69,11 +69,11 @@ currentU = update_u;
 %         nextX(nextX<0)=0;
 
 if isempty(value_function)
-    [res,resUnweighted]=reward(currentX(:,ind_available_var)*0,currentU*0,weights);
+    [res,resUnweighted]=reward(nextX(:,ind_available_var)*0,currentU*0,weights);
 
 else
   
-    [resTotTmp,resUnweighted]=reward(currentX(:,ind_available_var),currentU(:,ind_available_var),weights);
+    [resTotTmp,resUnweighted]=reward(mu(:,ind_available_var),currentU(:,ind_available_var),weights);
   
 %     [muV,~]=value_function.gp_model(nextX,1);
     [muV,~]=eval_value_function(value_function,nextX);
