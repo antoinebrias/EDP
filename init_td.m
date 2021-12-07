@@ -20,7 +20,7 @@ dpstruct.method = 'td';
 %% temporal difference learning parameters
 
 % number of support states
-dpstruct.n_support_states=20;
+dpstruct.n_support_states=40;
 
 % How to generate the support states used here
 % 'random' -> randomely generated 
@@ -36,7 +36,7 @@ dpstruct.lambda=0.9;
 dpstruct.n_out_max = 20;
 
 % inner loop number of iterations
-dpstruct.n_in_max = 2;
+dpstruct.n_in_max = 1;
 
 % debug mode with additionnal display during the computation
 dpstruct.debug = 0;

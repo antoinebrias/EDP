@@ -34,7 +34,7 @@ resTmp = [];
 
 
 for parset=1:3
-for harvestfun=1:3    
+for harvestfun=3    
     
 %     if first_iter 
 %         harvestfun = 2;
@@ -358,8 +358,12 @@ X=log([h(2:T-1)' h(1:T-2)']);%3 or 4 lags of h?
 
 Y=log(h(3:T)+Yield(3:T))';
 
-mY=min(Y);sdY=std(Y);
+% [X,Y]
+
+mY=mean(Y);sdY=std(Y);
 Y=(Y-mY)/sdY;
+% [X,Y]
+% size(X)
 for d=1:2
     lpost=@(p) GP4DP_Embed2b_fit(p,X(1:end,1:d),Y(1:end),0,[],d,0,[0 0]);
     LenScale=.05*ones(1,d);
@@ -626,10 +630,11 @@ mdlstruct.control_param =  [1 ]; % both  dimensions are fully controlled
 % data_show(mdlstruct)
 
 
+for d=1:2
 % we specify the number of lags used here
 % here, we specify the number of time lags used for each variables
 % 0 means that the variable is not used in the prediction
-mdlstruct.n_lags = [2];
+mdlstruct.n_lags = [d];
 
 % % GP regression
 % disp('*****************************************************')
@@ -647,8 +652,24 @@ mdlstruct.gp = init_gp();
 mdlstruct.gp.is_log = 0;
 mdlstruct.gp.cond_0=0;
 
+% %%%%%%%%%%%%%%%!!!!!
+% mdlstruct.gp.is_value_function=0;
+
 % we now fit the gp with the data in mdlstruct
 mdlstruct = fit_gp(mdlstruct);
+
+nll(d)=mdlstruct.gp.nll;
+end
+bestEgp=2;
+if nll(2)>(nll(1)-2), bestEgp=1;end 
+
+mdlstruct.n_lags = [bestEgp];
+mdlstruct.gp = init_gp();
+mdlstruct.gp.is_log = 0;
+mdlstruct.gp.cond_0=0;
+mdlstruct = fit_gp(mdlstruct);
+
+
 
 mdlstruct.value_function_type = 'gp'; %'gp'or 'nn'
 %using logarithmic value function
@@ -738,8 +759,8 @@ end
  
  resTmp = [resTmp; [ys_opt mean(Yield_par(T+1:T+Tf)) mean(Yield_GP(T+1:T+Tf)) mean(Yield_TD_GP(T+1:T+Tf)) ] ];
  
-filename=['C:\Users\Renaud\Documents\MATLAB\Steve\resComparison_test\output2_' num2str(parset) '_' num2str(harvestfun) '_' num2str(bycatch) '_' num2str(100*v) '_' num2str(T) '_' num2str(iter)];
-save(filename,'ys_opt','us_opt','xt_GP','xt_par','xt_TD_GP','u_TD_GP','Yield_TD_GP','Yield_GP','Yield_par','pfit','u_GP','u_par','uopt','uopt_par','model','pm','pt_pars','pt_err','bestE')
+% filename=['C:\Users\Renaud\Documents\MATLAB\Steve\resComparison_test\output2_' num2str(parset) '_' num2str(harvestfun) '_' num2str(bycatch) '_' num2str(100*v) '_' num2str(T) '_' num2str(iter)];
+% save(filename,'ys_opt','us_opt','xt_GP','xt_par','xt_TD_GP','u_TD_GP','Yield_TD_GP','Yield_GP','Yield_par','pfit','u_GP','u_par','uopt','uopt_par','model','pm','pt_pars','pt_err','bestE')
 
 %    if first_iter 
 %         first_iter = 0;
@@ -748,13 +769,18 @@ save(filename,'ys_opt','us_opt','xt_GP','xt_par','xt_TD_GP','u_TD_GP','Yield_TD_
 
 
  end%
- end;end;end
+ end;end;
 model
+end
+
 end;
 harvestfun
 end
 parset
 end
+
+save('december_res_2.mat')
+
 % modelE
 % apxE=1+sum(diff(-modelE,[],2)>4,2);
 % [apxE relY(:,4)]

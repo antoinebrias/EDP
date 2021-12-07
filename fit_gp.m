@@ -122,7 +122,7 @@ end
 % mOut=min(z);%min(z); %%%%%% CHANGE 18/11/21
 % sdOut=std(z);
 
-mOut=mean(z);%min(z); %%%%%% CHANGE 25/11/21
+mOut=min(z);%min(z); %%%%%% CHANGE 25/11/21
 sdOut=std(z);
 
 
@@ -142,7 +142,10 @@ pars=[log(LenScale) log(ve/(1-ve)) log(gp_tau)]';
 %     cond0 = 0;
 
 %
-%
+
+
+
+
 for i=1:length(ind_available_var) % !!!14/04/2021 change n_dim
     
     lpost=@(p) GP4DP(p,x,zOut(:,i),[],[],cond0,Condj0,Condj1,0);

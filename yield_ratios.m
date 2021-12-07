@@ -2,7 +2,7 @@
 % close all
 
 % load('save_gp_11072021.mat')
-load('compGP-290821.mat')
+% load('compGP-290821.mat')
 
 res = resTmp;
 % parset harvestfun model vset  Tset iter
@@ -13,7 +13,7 @@ res_chaos  = [];res_limit_cycle  = [];res_stable  = [];res_noise_level_0  = [];r
 res_training_interval_30  = [];res_training_interval_50  = [];res_training_interval_100  = [];res_two_locations  = [];res_mat_effect  = [];res_time_varying_r  = [];res_competition  = [];
 iter_res = 0;
 for parset=1:3
-for harvestfun=1:3    
+for harvestfun=3%1:3    
 for model=[2 3 4 10]
 for vset=1:3
 for Tset=1:3

@@ -16,7 +16,7 @@ if mdlstruct.n_dim>1
         indY = 2;
     end
     
-    nxgrid=100;
+    nxgrid=40;
     x=mdlstruct.data;
     x1d = [linspace(0*min(x(:,indX)),max(x(:,indX)),nxgrid);linspace(0*min(x(:,indY)),max(x(:,indY)),nxgrid)]';
     
@@ -93,7 +93,7 @@ else
             indY = 2;
         end
         
-        nxgrid=100;
+        nxgrid=40;
         x=mdlstruct.data;
         
         
@@ -180,7 +180,7 @@ else
         hold off
         
     else
-        nxgrid=100;
+        nxgrid=40;
         x=mdlstruct.data;
         x1d = [linspace(0*min(x(:,ind_available_var(1))),max(x(:,ind_available_var(1))),nxgrid)]';
         

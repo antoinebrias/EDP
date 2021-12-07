@@ -64,7 +64,7 @@ else
         
          % by default the  first lag is displayed
         indX = 1;
-        nxgrid=100;
+        nxgrid=20;
         x=mdlstruct.data;
         x_tmp=[];
         for i=1:1%n_lags(1) %!!!
@@ -105,7 +105,7 @@ else
         % by default the two first lags are displayed
         indX = 1;
         indY = 2;
-        nxgrid=50;
+        nxgrid=20;
         x=mdlstruct.data;
         x_tmp=[];
         for i=1:1%n_lags(1) %!!!
