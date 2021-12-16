@@ -28,18 +28,22 @@ clear
 rng('default');
 rng(1988);
 
-resTmp = [];
+
 
 % first_iter = 1;
+idx_loop =0;
+iter_max = 100;
+parset_length = 3;
+harvestfun_length = 1;
+bycatch_length = 1;
+model_length = 4;
+vset_length = 3;
+Tset_length = 3;
 
+resTmp = zeros(iter_max*parset_length*harvestfun_length*bycatch_length*model_length*vset_length*Tset_length,4);
 
 for parset=1:3
 for harvestfun=3    
-    
-%     if first_iter 
-%         harvestfun = 2;
-%     end
-    
     
 %% set up models
 switch parset
@@ -131,24 +135,25 @@ nx=100;nu=50;
 duphi=.98; duv=5;
 initsd=.05;
 
- u=0.0001*ones(1,T);
+ U=0.0001*ones(1,T);
 switch harvestfun
     case 0, %constant
-        uinc=@(Yield,u,t) 0;
+        uinc=@(Yield,U,t) 0;
     case 1, %Fish-o-Stat
-        uinc=@(Yield,u,t) (dua*(Yield(t)>=Yield(t-1))*(1-u(t))-dub*(Yield(t)<Yield(t-1))*u(t))*3*(t/T)^2;
+        uinc=@(Yield,U,t) (dua*(Yield(t)>=Yield(t-1))*(1-U(t))-dub*(Yield(t)<Yield(t-1))*U(t))*3*(t/T)^2;
     case 2, %stepped
-        uinc=@(Yield,u,t) 5*.5/T*(mod(t,5)==0);
+        uinc=@(Yield,U,t) 5*.5/T*(mod(t,5)==0);
     case 3, %AR to u=0.5
-        uinc=@(Yield,u,t) 1/(1+((1-u(t))/u(t))^duphi*exp(-(1-duphi)*randn(1)*duv))-u(t);
+        uinc=@(Yield,U,t) 1/(1+((1-U(t))/U(t))^duphi*exp(-(1-duphi)*randn(1)*duv))-U(t);
 end
 % u=.2*rand(1,T);
 % u(1)=0.001;u(2)=.01;
 % du=0;
 
+idx_loop = idx_loop+1;
+res_par_Tmp = zeros(iter_max,4);
 
-
- for iter=1:100   
+ parfor iter=1:iter_max   
 %       if first_iter 
 %         Tset = 94;
 %     end
@@ -163,6 +168,7 @@ Ts=500;
 us=linspace(0,.99,100);
 xs=zeros(2+(model==6)-(model==7),Ts);
 xs(:,1)=x0{model}';
+harvs=[];yavg=[];
 for j=1:length(us);
     for t=1:Ts
         xs(:,t+1)=M(xs(:,t),us(j));
@@ -186,7 +192,7 @@ newU=@(u,du) max(0.001,min(1-.001,u+du));%constant F
 xt=zeros(2+(model==6)-(model==7),T);
 xt(:,1)=x0{model}'*(1+initsd*2*(rand(1)-.5));
 Yield=zeros(1,T);
-h=zeros(1,T);
+h=zeros(1,T);u = U;
 
 %simulate time series
 for t=1:T
@@ -249,6 +255,8 @@ covpars=inv(rx'*rx);
 
 
 %% Bayesian Parametric transition matrix
+msurf_par=[];vsurf_par=[];
+P_par=[];P0_par=[];
 for i=1:nx,%lognormal transitions
     rxi=[1 exp(hg(i)) (hg(i))];
     pt_pars(3)=1;covpars(3,3)=0;
@@ -283,6 +291,7 @@ uopt_par=max(0,1-exp(zs-hg));
 %V_par(1)=0;
 count=0;deltau=1;
 %iterate 
+unew_par=[];
 while (deltau>=du)&(count<1000)  
 %figure(999);subplot(2,1,1);plot(hg,V_par);subplot(2,1,2);plot(hg,uopt_par);%pause
     for i=1:nx
@@ -364,6 +373,7 @@ mY=mean(Y);sdY=std(Y);
 Y=(Y-mY)/sdY;
 % [X,Y]
 % size(X)
+pf=[];nlogl=[];
 for d=1:2
     lpost=@(p) GP4DP_Embed2b_fit(p,X(1:end,1:d),Y(1:end),0,[],d,0,[0 0]);
     LenScale=.05*ones(1,d);
@@ -398,7 +408,7 @@ end
 
 %% determine GP
 %initialize parameters
-EmbedDim=bestE;
+EmbedDim=bestE;bestRot=[];
 if bestE==1, bestRot=0;end
 LenScale=.05*ones(1,EmbedDim);
 ve=.000000001;
@@ -487,7 +497,7 @@ end
 % msurf=reshape(log(pm(1)*vg1.*(1-vg2)),nx,nx);
 % vsurf=.00001*ones(nx);
 
-
+P=[];Fbar_num=[];
 for i=1:nx,for j=1:nx,%normal transitions
 %    ff=exp(-.5*((lnhgu-mY)/sdY-msurf(i,j)).^2/vsurf(i,j))./hgtile;
     ff=exp(-.5*(lnhgu-msurf(i,j)).^2/vsurf(i,j));
@@ -685,6 +695,8 @@ mdlstruct.is_value_function_log = 0; %not working rn
 % disp('  Optimal control problem structure creation')
 % disp('*****************************************************')
 
+optstruct=[];
+
 % Discount factor
 optstruct.discount_factor=disc;
 
@@ -753,12 +765,12 @@ end
 %            subplot(3,1,2);plot([1:T+Tf],u_TD_GP,'b',[1:T+Tf],u_GP,'c',[0 T+Tf],us_opt*[1 1],'r');
 %            subplot(3,1,3);plot([1:T+Tf],Yield_TD_GP,'b',[0 T+Tf],ys_opt*[1 1],'r',[T+1:T+Tf],mean(Yield_TD_GP(T+1:T+Tf))*ones(Tf,1),'k',[T+1:T+Tf],mean(Yield_par(T+1:T+Tf))*ones(Tf,1),'g',[T+1:T+Tf],mean(Yield_GP(T+1:T+Tf))*ones(Tf,1),'c');
     
- [mean(Yield_par(T+1:T+Tf)) mean(Yield_GP(T+1:T+Tf)) mean(Yield_TD_GP(T+1:T+Tf)) ];
+%  [mean(Yield_par(T+1:T+Tf)) mean(Yield_GP(T+1:T+Tf)) mean(Yield_TD_GP(T+1:T+Tf)) ];
  
- resYield(iter,Tset,vset,model,bycatch,harvestfun,parset,1:3)=[mean(Yield_par(T+1:T+Tf)) mean(Yield_GP(T+1:T+Tf)) mean(Yield_TD_GP(T+1:T+Tf)) ];
+%  resYield(iter,Tset,vset,model,bycatch,harvestfun,parset,1:3)=[mean(Yield_par(T+1:T+Tf)) mean(Yield_GP(T+1:T+Tf)) mean(Yield_TD_GP(T+1:T+Tf)) ];
  
- resTmp = [resTmp; [ys_opt mean(Yield_par(T+1:T+Tf)) mean(Yield_GP(T+1:T+Tf)) mean(Yield_TD_GP(T+1:T+Tf)) ] ];
- 
+%  resTmp = [resTmp; [ys_opt mean(Yield_par(T+1:T+Tf)) mean(Yield_GP(T+1:T+Tf)) mean(Yield_TD_GP(T+1:T+Tf)) ] ];
+ res_par_Tmp(iter,:) = [ys_opt mean(Yield_par(T+1:T+Tf)) mean(Yield_GP(T+1:T+Tf)) mean(Yield_TD_GP(T+1:T+Tf)) ]
 % filename=['C:\Users\Renaud\Documents\MATLAB\Steve\resComparison_test\output2_' num2str(parset) '_' num2str(harvestfun) '_' num2str(bycatch) '_' num2str(100*v) '_' num2str(T) '_' num2str(iter)];
 % save(filename,'ys_opt','us_opt','xt_GP','xt_par','xt_TD_GP','u_TD_GP','Yield_TD_GP','Yield_GP','Yield_par','pfit','u_GP','u_par','uopt','uopt_par','model','pm','pt_pars','pt_err','bestE')
 
@@ -768,7 +780,9 @@ end
 
 
 
- end%
+ end
+  resTmp((idx_loop-1)*iter_max+1:iter_max,:) = res_par_Tmp;
+ 
  end;end;
 model
 end
@@ -779,7 +793,7 @@ end
 parset
 end
 
-save('december_res_2.mat')
+save('december_res_3.mat')
 
 % modelE
 % apxE=1+sum(diff(-modelE,[],2)>4,2);
