@@ -55,7 +55,7 @@ end
 
 
      %%%%%% CHANGE 18/11/21
-     if ~gp.is_value_function
+     if ~gp.is_value_function && ~gp.is_log
 mu = exp(mu+eps);
      end
 

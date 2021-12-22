@@ -46,7 +46,7 @@ vec=@(x)x(:);
 
 
 %transform parameters from real line to constrained space
-vemin=0.001;taumin=.001;
+vemin=0.001;taumin=.1;
 phi=exp(pars(1:d));%phi=0.1*ones(d,1);
 ve=(1-vemin)*exp(pars(d+1))/(1+exp(pars(d+1)))+vemin;
 tau=(1-taumin)*exp(pars(d+2))/(1+exp(pars(d+2)))+taumin;

@@ -153,8 +153,8 @@ end
 idx_loop = idx_loop+1;
 res_par_Tmp = zeros(iter_max,4);
 
-for iter=1:iter_max   
-%  parfor iter=1:iter_max   
+% for iter=1:iter_max   
+ parfor iter=1:iter_max   
 %       if first_iter 
 %         Tset = 94;
 %     end
@@ -776,8 +776,8 @@ end
  
 %  resYield(iter,Tset,vset,model,bycatch,harvestfun,parset,1:3)=[mean(Yield_par(T+1:T+Tf)) mean(Yield_GP(T+1:T+Tf)) mean(Yield_TD_GP(T+1:T+Tf)) ];
  
- resTmp = [resTmp; [ys_opt mean(Yield_par(T+1:T+Tf)) mean(Yield_GP(T+1:T+Tf)) mean(Yield_TD_GP(T+1:T+Tf)) ] ];
-%  res_par_Tmp(iter,:) = [ys_opt mean(Yield_par(T+1:T+Tf)) mean(Yield_GP(T+1:T+Tf)) mean(Yield_TD_GP(T+1:T+Tf)) ]
+%  resTmp = [resTmp; [ys_opt mean(Yield_par(T+1:T+Tf)) mean(Yield_GP(T+1:T+Tf)) mean(Yield_TD_GP(T+1:T+Tf)) ] ];
+ res_par_Tmp(iter,:) = [ys_opt mean(Yield_par(T+1:T+Tf)) mean(Yield_GP(T+1:T+Tf)) mean(Yield_TD_GP(T+1:T+Tf)) ]
 % filename=['C:\Users\Renaud\Documents\MATLAB\Steve\resComparison_test\output2_' num2str(parset) '_' num2str(harvestfun) '_' num2str(bycatch) '_' num2str(100*v) '_' num2str(T) '_' num2str(iter)];
 % save(filename,'ys_opt','us_opt','xt_GP','xt_par','xt_TD_GP','u_TD_GP','Yield_TD_GP','Yield_GP','Yield_par','pfit','u_GP','u_par','uopt','uopt_par','model','pm','pt_pars','pt_err','bestE')
 
@@ -788,7 +788,7 @@ end
 
 
  end
-%   resTmp((idx_loop-1)*iter_max+1:iter_max,:) = res_par_Tmp;
+  resTmp((idx_loop-1)*iter_max+1:iter_max,:) = res_par_Tmp;
  
  end;end;
 model
@@ -800,7 +800,7 @@ end
 parset
 end
 
-save('december_res_non_par.mat')
+save('december_res_par.mat')
 
 % modelE
 % apxE=1+sum(diff(-modelE,[],2)>4,2);

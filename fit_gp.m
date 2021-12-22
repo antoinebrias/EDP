@@ -60,12 +60,12 @@ switch mdlstruct.control_type
                 %                 Input(:,i) = Data((n_lags-1)*tau+1:end-tau,i).*(1-Control((n_lags-1)*tau+1:end-tau,i)*mdlstruct.control_param(i));
                 %                 Output(:,i)= Data(n_lags*tau+1:end,i);
                 
-                Input(:,i) = Data((n_lags(ind_available_var(i))-1)*tau+1:end-tau,ind_available_var(i)).*(1-Control((n_lags(ind_available_var(i))-1)*tau+1:end-tau,ind_available_var(i))*mdlstruct.control_param(ind_available_var(i)));
-              
-                Output(:,i)= Data(n_lags(ind_available_var(i))*tau+1:end,ind_available_var(i));
-                
-%                 Input(:,i) = Data(:,ind_available_var(i)).*(1-Control(:,ind_available_var(i))*mdlstruct.control_param(ind_available_var(i)));
-%                 Output(:,i)= Data(:,ind_available_var(i));
+%                 Input(:,i) = Data((n_lags(ind_available_var(i))-1)*tau:end-tau,ind_available_var(i)).*(1-Control((n_lags(ind_available_var(i))-1)*tau:end-tau,ind_available_var(i))*mdlstruct.control_param(ind_available_var(i)));
+%               
+%                 Output(:,i)= Data(n_lags(ind_available_var(i))*tau:end,ind_available_var(i));
+%                 
+                Input(:,i) = Data(1:end-1,ind_available_var(i)).*(1-Control(1:end-1,ind_available_var(i))*mdlstruct.control_param(ind_available_var(i)));
+                Output(:,i)= Data(2:end,ind_available_var(i));
             end
         end
         
@@ -98,18 +98,26 @@ for i=1:length(ind_available_var) % !!!14/04/2021 change n_dim
     xtmp = hankel_matrix((Input(:,i)-mIn(i))/(sdIn(i)+eps),[0:tau:tau*(n_lags(ind_available_var(i))-1)]);
     x=[x xtmp(:,1:end)];
 end
+% %remove extra rows
+if n_lags==1
+y(1, :) = [];
+s_in(1, :) = [];
+x(1, :) = [];
+end
+y(end, :) = [];
+s_in(end, :) = [];
+x(end, :) = [];
+% if n_lags==2
+% y(end, :) = [];
+% s_in(end, :) = [];
+% x(end, :) = [];
+% end
+
+
 %remove rows with nan
 y(any(isnan(x), 2), :) = [];
 s_in(any(isnan(x), 2), :) = [];
 x(any(isnan(x), 2), :) = [];
-
-
-%%%% Change 25/11/2021
-if  ~mdlstruct.gp.is_value_function
-x = log(x+eps);
-y = log(y+eps);
-s_in = log(s_in+eps);
-end
 
 
 if is_log
@@ -118,11 +126,23 @@ else
     z =y;
 end
 
+%%%% Change 25/11/2021
+if  ~mdlstruct.gp.is_value_function
+    z = log(y);%!!!!!!!!!!!!!!!!!!!!
+x = log(x+eps);
+y = log(y+eps);
+s_in = log(s_in+eps);
+
+end
+
+
+
+
 %
 % mOut=min(z);%min(z); %%%%%% CHANGE 18/11/21
 % sdOut=std(z);
 
-mOut=min(z);%min(z); %%%%%% CHANGE 25/11/21
+mOut=mean(z);%min(z); %%%%%% CHANGE 25/11/21
 sdOut=std(z);
 
 
